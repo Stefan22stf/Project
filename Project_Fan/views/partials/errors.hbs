@@ -1,0 +1,33 @@
+<div class="col-3">
+    <div class="row Card">
+        <div class="col-8 p-0">
+            <div class="row TitluStatus justify-content-center align-items-end"><span>Errors</span></div>
+            <div class="row StareStatus justify-content-center align-items-center"><span style="font-family: 'Poppins', sans-serif;" id="errorTxt">No Errors</span></div>
+        </div>
+        <div class="col-4 p-0">
+        <span class="image-container">
+            <img src="/img/error.png" alt="">
+        </span>
+        </div>
+    </div>
+</div>
+
+  <script>
+    function checkErrors() {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/checkErrors');
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                var jsn = JSON.parse(xhr.response);
+                var dcx = document.getElementById("errorTxt");
+                if (parseInt(jsn["error"]) > 0) {
+                    dcx.innerHTML =  String(jsn["error"]) + " Errors";
+                } else {
+                    dcx.innerHTML = "No Errors";
+                }
+            }
+        };
+        xhr.send();
+    }
+    setInterval(checkErrors, 1000);
+  </script>

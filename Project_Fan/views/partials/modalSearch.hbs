@@ -1,0 +1,197 @@
+<div class="blur-background" id="blurBackground"></div>
+<div id="myModal" class="modalSearch">
+  <div class="modal-contentSearch">
+    
+    <span class="close">&times;</span>
+    
+    <div class="contentCautare">
+        <label for="barcode" style="top:-68%; position:absolute;"><b>Cod de bare:</b></label>
+        <input type="text" id="barcode" name="barcode" style="left:-0.0%; position:absolute; width:18%;" class="form-control" placeholder="Introduceți codul de bare..."><br><br>
+        
+        <label for="date" style="top:-68%; left:21%; position:absolute;" ><b>Data:</b></label>
+        <input type="date" id="dateSH" style="left:21%; position:absolute; width:15%;" name="date" class="form-control"><br><br>
+        
+        <label for="timeIntrare" style="top:-68%; left:39%; position:absolute;"><b>Ora Intrare:</b></label>
+        <input type="time" id="timeIntrare" name="timeIntrare" style="left:39%; position:absolute; width:15%;" class="form-control"><br><br>
+
+        <label for="timeExit" style="top:-68%; left:57%; position:absolute;"><b>Ora Iesire:</b></label>
+        <input type="time" id="timeExit" name="timeExit" style="left:57%; position:absolute; width:15%;" class="form-control"><br><br>
+
+        <button id="searchButton" class="btn btn-primary" style="left:76%; position:absolute;">Caută <i class='bx bx-search-alt-2' style="position: relative; top:3px; left:3px;"></i></button>
+        <button id="extractPDFButton" style="left:86%; width:16%; position:absolute;" class="btn btn-success" onclick="extractDataToExcelAndSendEmail()">Extract Excel to Email <img style="left: 8.5px; top:-1px; width:9%; position:relative;" src="/img/xls-file.png" alt=""></button>
+    </div>
+    <div class="ContentTabelCautare">
+        <table id="tabelDate" class="table table-bordered">
+            <thead class="table-cap">
+                <tr>
+                    <th scope="col" style="border: none;">Id</th>
+                    <th scope="col" style="border: none;">Id Client</th>
+                    <th scope="col" style="border: none;">Barcode</th>
+                    <th scope="col" style="border: none;">Length</th>
+                    <th scope="col" style="border: none;">Width</th>
+                    <th scope="col" style="border: none;">Height</th>
+                    <th scope="col" style="border: none;">Weight</th>
+                    <th scope="col" style="border: none;">Date</th>
+                    <th scope="col" style="border: none;">Done WMS</th>
+                </tr>    
+            </thead>
+            <tbody class="tabs" id="tabelCautareDate">
+                {{#each search}}
+                    <tr>
+                        <th scope="row" style="border: silid 1px gray;" >{{id}}</th>
+                        <th scope="row">{{id_client}}</th>
+                        <th scope="row">{{barcode}}</th>
+                        <th scope="row">{{length}}</th>
+                        <th scope="row">{{width}}</th>
+                        <th scope="row">{{height}}</th>
+                        <th scope="row">{{weight}}</th>
+                        <th scope="row">{{date}}</th>
+                        <th scope="row">{{done_wms}}</th>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    const openModalBtn = document.getElementById('openModalBtn');
+    const modal = document.getElementById('myModal');
+    const blurBackground = document.querySelector('.blur-background');
+    const closeModalBtn = document.querySelector('.close');
+
+    openModalBtn.addEventListener('click', function() {
+    modal.style.display = 'block';
+    blurBackground.style.display = 'block'; 
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+    modal.style.display = 'none';
+    blurBackground.style.display = 'none'; 
+    });
+</script>
+
+<script>
+    document.getElementById('searchButton').addEventListener('click', function() {
+    const barcode = document.getElementById('barcode').value;
+    const date = document.getElementById('dateSH').value;
+    const timeIntrare = document.getElementById('timeIntrare').value;
+    const timeExit = document.getElementById('timeExit').value;
+
+    const convertToLocalTime = (utcDateString) => {
+        const utcDate = new Date(utcDateString);
+        const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
+        return localDate.toISOString().replace('T', ' ').substring(0, 19);
+    };
+
+    if (barcode) {
+        fetch('/searchBarcode?barcode=' + barcode)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tableBody = document.getElementById('tabelDate').querySelector('.tabs');
+                    tableBody.innerHTML = '';
+                    data.search.forEach(row => {
+                        row.date = convertToLocalTime(row.date);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <th scope="row">${row.id}</th>
+                            <td>${row.id_client}</td>
+                            <td>${row.barcode}</td>
+                            <td>${row.length}</td>
+                            <td>${row.width}</td>
+                            <td>${row.height}</td>
+                            <td>${row.weight}</td>
+                            <td>${row.date}</td>
+                            <td>${row.done_wms}</td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+
+                    modal.style.display = 'block';
+                    blurBackground.style.display = 'block';
+                } else {
+                    alert(data.messageBarcode);
+                }
+            })
+            .catch(error => console.error('Eroare la preluarea datelor:', error));
+    } else if (date) {
+        const queryParams = `date=${date}` + (timeIntrare ? `&timeIntrare=${timeIntrare}` : '') + (timeExit ? `&timeExit=${timeExit}` : '');
+
+        fetch(`/search?${queryParams}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tableBody = document.getElementById('tabelDate').querySelector('.tabs');
+                    tableBody.innerHTML = '';
+                    data.search.forEach(row => {
+                        row.date = convertToLocalTime(row.date);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <th scope="row">${row.id}</th>
+                            <td>${row.id_client}</td>
+                            <td>${row.barcode}</td>
+                            <td>${row.length}</td>
+                            <td>${row.width}</td>
+                            <td>${row.height}</td>
+                            <td>${row.weight}</td>
+                            <td>${row.date}</td>
+                            <td>${row.done_wms}</td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+
+                    modal.style.display = 'block';
+                    blurBackground.style.display = 'block';
+                } else {
+                    alert(data.messageSearch);
+                }
+            })
+            .catch(error => console.error('Eroare la preluarea datelor:', error));
+    } else {
+        alert('Introduceți un cod de bare sau o dată pentru a efectua căutarea.');
+    }
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script>
+    function extractDataToExcelAndSendEmail() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); 
+        const day = currentDate.getDate().toString().padStart(2, '0'); 
+        const hours = currentDate.getHours().toString().padStart(2, '0'); 
+        const minutes = currentDate.getMinutes().toString().padStart(2, '0'); 
+
+        const fileName = `${year}-${month}-${day}_${hours}-${minutes}.xlsx`;
+
+        const table = document.getElementById('tabelDate');
+        const rows = Array.from(table.querySelectorAll('tr'));
+        const data = rows.map(row => {
+            return Array.from(row.querySelectorAll('th, td')).map(cell => cell.innerText);
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
+
+        XLSX.writeFile(workbook, fileName);
+
+        fetch('/send-email') 
+        .then(response => {
+            if (response.ok) {
+                alert('Email trimis cu succes!');
+            } else {
+                alert('Eroare la trimiterea emailului!');
+            }
+        })
+        .catch(error => {
+            console.error('Eroare:', error);
+        });
+    }
+</script>

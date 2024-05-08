@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+
+  <link rel="stylesheet" href="/css/font.google.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/popper.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/handlebars.js"></script>
+  <script src="/js/paho-mqtt.js"></script>
+  <script src="/js/sweetalert2.11.js"></script>
+  <script src="/js/mqttws31.min.js"></script>
+  <link rel="stylesheet" href="/boxicons-2.1.4/css/boxicons.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/errors.css">
+  <link href='https://fonts.googleapis.com/css?family=Libre Barcode 128' rel='stylesheet'>
+
+<title>Package destination</title>
+<link rel="icon" href="/img/Logo_Fan_Courier.svg.png" type="image/png">
+
+</head>
+
+<body>
+  {{!-- <script>mqttConnect()</script> --}}
+  <div class="wrapper">
+    <nav class="sidebar">
+      <div class="logo_details">
+        <div class="chenarAlb">
+          <img src="/img/Logo_Fan_Courier.svg.png">
+        </div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <hr>
+      <ul class="nav-list">
+        <li>
+          <a href="/dashboard">
+            <i class='bx bx-home-alt'></i>
+            <span class="link_name">Dashboard</span>
+          </a>
+          <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+          <a href="/errors">
+            <i class='bx bx-error' ></i>
+            <span class="link_name">Errors</span>
+          </a>
+          <span class="tooltip">Errors</span>
+        </li>
+        <li>
+          <a href="/destination">
+            <i class="bx bx-menu" id="btn"></i>
+            <span class="link_name">Parcel destination</span>
+          </a>
+          <span class="tooltip">Parcel destination</span>
+        </li>
+        <li>
+          <a href="/lastRead">
+            <i class='bx bxs-barcode'></i>
+            <span class="link_name">Last Read</span>
+          </a>
+          <span class="tooltip">Last Read</span>
+        </li>
+        <li>
+          <a href="/reports">
+            <i class='bx bx-bar-chart-alt-2' ></i>
+            <span class="link_name">Reports</span>
+          </a>
+          <span class="tooltip">Reports</span>
+        </li>
+        <li>
+          <a href="/contact">
+            <i class='bx bx-phone' ></i>
+            <span class="link_name">Contact</span>
+          </a>
+          <span class="tooltip">Contact</span>
+        </li>
+        <li>
+          <a href="/documentatie">
+            <i class='bx bx-book' ></i>
+            <span class="link_name">Documentation</span>
+          </a>
+          <span class="tooltip">Documentation</span>
+        </li>
+        <li>
+          <a href="/logout">
+            <i class='bx bx-log-out'></i>
+            <span class="link_name">Logout</span>
+          </a>
+          <span class="tooltip">Logout</span>
+        </li>
+      </ul>
+      <div class="footer">
+        <p>
+          Copyright &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          All rights reserved by DasstecB2B & Mihalcea Stefan
+        </p>
+      </div>
+    </nav>
+      <div class="content">
+        <div class="row infoMedia">
+          <div class="pageName" style="color: white; font-size:25px; margin-left:-7.5%"><b>Parcel Destination</b></div>
+          <div class="clock-container">
+            <p id="date"></p><p id="clock"></p><p id="date"></p>
+          </div>
+        </div>
+        <div class="row contTabel">
+          <div class="row statusFlux">
+            {{>server}}
+            {{>scanner}}
+            {{>emergency}}
+            {{>errors}}
+          </div>
+          <div class="row buton">
+            <button id="openModalBtn" type="button" class="btnacn" style="height: 60%; width: 15%; margin-top:1%; outline: none; border-radius: 5px;">Search</button>
+            <button id="refreshButton" type="button" class="btnref" style="height: 60%; width: 15%; margin-top:1%; margin-left: 40px; outline: none; border-radius: 5px;">Refresh</button>
+            {{>modalDestinatii}}
+          </div>
+          <div style="max-height: 68vh; overflow-y: auto; margin-left:0%">{{> tabelDestinatii destination=this.destination }}</div>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    window.onload = function(){
+        const sidebar = document.querySelector(".sidebar");
+        const closeBtn = document.querySelector("#btn");
+        const searchBtn = document.querySelector(".bx-search")
+
+        closeBtn.addEventListener("click",function(){
+            sidebar.classList.toggle("open")
+            menuBtnChange()
+        })
+
+        function menuBtnChange(){
+            if(sidebar.classList.contains("open")){
+                closeBtn.classList.replace("bx-menu","bx-menu-alt-right")
+            }else{
+                closeBtn.classList.replace("bx-menu-alt-right","bx-menu")
+            }
+        }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateElement = document.getElementById('date');
+      dateElement.textContent = now.toLocaleDateString(undefined, options);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+  </script>
+
+  <script>
+    function manualRefresh1() {
+        const scrollPosition = window.scrollY || window.pageYOffset;
+        location.reload();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const refreshButton = document.getElementById("refreshButton");
+
+        refreshButton.addEventListener("click", function() {
+            manualRefresh1();
+        });
+    });
+  </script> 
+
+  <script>
+    (function ($) {
+        "use strict";
+        var fullHeight = function () {
+            $(".js-fullheight").css("height", $(window).height());
+            $(window).resize(function () {
+                $(".js-fullheight").css("height", $(window).height());
+            });
+        };
+        fullHeight();
+        $("#sidebarCollapse").on("click", function () {
+            $("#sidebar").toggleClass("active");
+        });
+    })(jQuery);
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,50 @@
+<div id="zona4">
+    <div class="electricPanelTE4"></div>
+    {{#range 1 4}}
+        <div class="mz3{{id}}" id=2{{id}}>
+            <h6>M{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 4}}
+        <div class="sz3{{id}}" id=3{{id}}>
+            <h6>S{{id}}</h6>
+        </div>
+    {{/range}}
+
+    {{#range 1 3}}
+        <div class="safetyT4{{id}}" id=safetyT4{{id}}>
+            <h6>Sg{{id}}</h6>
+        </div>
+    {{/range}}
+
+    <button type="button" class="btn btn-primary" id="openBtnTE4" data-toggle="modal" data-target="#exampleModal" style="opacity: 0;">
+    TE4
+    </button>
+    <div id="myModalTE4" class="modal">
+    <div class="modal-content">
+        <span class="closeTE4" style="left: 99%; top:-9px; position:relative;">&times; </span>
+        <embed src="/img/1-TE_1_SCHEMA_11_01_2024.pdf" type="application/pdf" width="100%" height="870px" />
+    </div>
+    </div> 
+</div>
+
+
+<script>
+    var modalTE4 = document.getElementById("myModalTE4");
+    var btnTE4 = document.getElementById("openBtnTE4");
+    var spanTE4 = document.getElementsByClassName("closeTE4")[0];
+
+    btnTE4.onclick = function() {
+        modalTE4.style.display = "block";
+    }
+
+    spanTE4.onclick = function() {
+        modalTE4.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalTE4) {
+            modalTE4.style.display = "none";
+        }
+    }
+</script>

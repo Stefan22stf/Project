@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+
+  <link rel="stylesheet" href="/css/font.google.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/popper.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/handlebars.js"></script>
+  <script src="/js/paho-mqtt.js"></script>
+  <script src="/js/sweetalert2.11.js"></script>
+  <script src="/js/mqttws31.min.js"></script>
+  <script src="/js/FanMQTT.js"></script>
+  <link rel="stylesheet" href="/boxicons-2.1.4/css/boxicons.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/errors.css">
+
+<title>Dashboard</title>
+<link rel="icon" href="/img/Logo_Fan_Courier.svg.png" type="image/png">
+</head>
+
+<body>
+  <script>mqttConnect()</script>
+  <div class="wrapper">
+    <nav class="sidebar">
+      <div class="logo_details">
+        <div class="chenarAlb">
+          <img src="/img/Logo_Fan_Courier.svg.png">
+        </div>
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <hr>
+      <ul class="nav-list">
+        <li>
+          <a href="/dashboard">
+            <i class='bx bx-home-alt'></i>
+            <span class="link_name">Dashboard</span>
+          </a>
+          <span class="tooltip">Dashboard</span>
+        </li>
+        <li>
+          <a href="/errors">
+            <i class='bx bx-error' ></i>
+            <span class="link_name">Errors</span>
+          </a>
+          <span class="tooltip">Errors</span>
+        </li>
+        <li>
+          <a href="/destination">
+            <i class="bx bx-menu"></i>
+            <span class="link_name">Parcel destination</span>
+          </a>
+          <span class="tooltip">Parcel destination</span>
+        </li>
+        <li>
+          <a href="/lastRead">
+            <i class='bx bxs-barcode'></i>
+            <span class="link_name">Last Read</span>
+          </a>
+          <span class="tooltip">Last Read</span>
+        </li>
+        <li>
+          <a href="/reports">
+            <i class='bx bx-bar-chart-alt-2' ></i>
+            <span class="link_name">Reports</span>
+          </a>
+          <span class="tooltip">Reports</span>
+        </li>
+        <li>
+          <a href="/contact">
+            <i class='bx bx-phone' ></i>
+            <span class="link_name">Contact</span>
+          </a>
+          <span class="tooltip">Contact</span>
+        </li>
+        <li>
+          <a href="/documentatie">
+            <i class='bx bx-book' ></i>
+            <span class="link_name">Documentation</span>
+          </a>
+          <span class="tooltip">Documentation</span>
+        </li>
+        <li>
+          <a href="/logout">
+            <i class='bx bx-log-out'></i>
+            <span class="link_name">Logout</span>
+          </a>
+          <span class="tooltip">Logout</span>
+        </li>
+      </ul>
+      <div class="footer">
+        <p>
+          Copyright &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          All rights reserved by DasstecB2B & Mihalcea Stefan
+        </p>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="row infoMedia">
+        <div class="pageName" style="color: white; font-size:25px; margin-left:-10.5%;"><b>Dashboard</b></div>
+        <div class="clock-container">
+          <p id="date"></p><p id="clock"></p><p id="date"></p>
+        </div>
+      </div>
+      <div class="row contTabel">
+        <div class="row statusFlux">
+          {{>server}}
+          {{>scanner}}
+          {{>emergency}}
+          {{>errors}}
+        </div>
+        <div class="mainContent">
+          <div class="controlButton" style="position: absolute;">
+            <button type="button" id="StartButton" onclick="startConveyor()" class="btn btn-control d-flex align-items-center justify-content-between" style="width: 15%; height: 60%; outline: none; margin-top:17px; margin-left:1.5%; padding:0px;">
+              <span1 style="flex: 1; font-family: 'Poppins';font-weight: bold;">Start</span1>
+            </button>
+            <button type="button" id="StopButton" onclick="stopConveyor()" class="btn btn-control d-flex align-items-center justify-content-between" style="width: 15%; height: 60%; outline: none; margin-top:17px; margin-left:30px; padding:0px;">
+              <span1 style="flex: 1;font-family: 'Poppins';font-weight: bold;">Stop</span1>
+            </button>
+            <button type="button" id="ResetButton" onclick="resetConveyor()" class="btn btn-control d-flex align-items-center justify-content-between" style="width: 15%; height: 60%; outline: none; margin-top:17px; margin-left:30px; padding:0px;">
+              <span style="flex: 1;font-family: 'Poppins';font-weight: bold;">Reset Sorter</span>
+            </button>
+            <button type="button" id="ResetFlowButton" onclick="resetFlowConveyor()" class="btn btn-control d-flex align-items-center justify-content-between" style="width: 15%; height: 60%; outline: none; margin-top:17px; margin-left:30px; padding:0px;">
+              <span style="flex: 1;font-family: 'Poppins';font-weight: bold;">Reset Flowsort</span>
+            </button>
+            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 15%; font-weight: bold; height: 60%; outline: none; margin-top:17px; margin-left:28%; padding:0px;">
+              Flux
+            </button>
+            <button type="button" class="btn btn-control" id="openLegend1" data-toggle="modal" data-target="#exempleModal" style="width: 3.2%; height:58.9%; position:absolute; outline: none; margin-top: 1%; margin-left:95.3%; padding:0px;">
+              <span class="legendIconDimension"><i class='bx bxs-book-bookmark' style=""></i></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#" id="f3" onclick="reply_click('f3')"><b>Flux</b></a>
+              <a class="dropdown-item" href="#" id="f2" onclick="reply_click('f2')"><b>Sorter</b></a>
+              <a class="dropdown-item" href="#" id="f1" onclick="reply_click('f1')"><b>Zona 1</b></a>
+              <a class="dropdown-item" href="#" id="f0" onclick="reply_click('f0')"><b>Zona 2</b></a>
+              <a class="dropdown-item" href="#" id="s1" onclick="reply_click('s1')"><b>Zona 3</b></a>
+            </div>
+          </div>
+          <div class="zone" id="zone">
+            {{>fluxGeneral}}
+            {{>sorter}}
+            {{>zona2}}
+            {{>zona3}}
+            {{>zona4}} 
+            <div id="l1Modal" class="modal">
+              <div class="modal-contentL1">
+                  <span class="closeL1">&times;</span>
+                  <span class="titluLegenda">Legenda</span>
+                  <span class="paragrafL">Aici o să găsiți semnificația fiecărui simbol:</span>
+                  <span class="cantar1"><b>Kg</b></span>
+                  <span class="cantar2"><b>Kg</b></span>
+                  <hr style="width: 40%; hight:0.8%; position:absolute; top:7%; left:29%; background-color:black;">
+                  <span class="infoLegenda"><p><b><b style="color: #f1f1f1;">......</b>Când se apasă pe fiecare simbol individual, se va deschide o imagine reprezentând echipamentul corespunzător din realitate.</b></p></span>
+                  {{#range 1 28}}
+                      <div class="simbolL1{{id}}" id=simbolL1{{id}}>
+                          <h6>s{{id}}</h6>
+                      </div>
+                  {{/range}}
+                  <table class="table" id="tabelL1" style="width: 45%; position:absolute; top:17%;">
+                      <thead>
+                          <tr>
+                          <th scope="col" style="width: 30%;">Simbol</th>
+                          <th scope="col">Descriere</th>
+                          </tr>
+                      </thead>
+                      <tbody style="height: 4%;">
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Banda Interol <b>OPRITA</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Banda Interol <b>PORNITA</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Banda Interol in <b>EROARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Infeed Interol <b>OPRIT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Infeed Interol <b>PORNIT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Infeed Interol in <b>EROARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Rola <b>OPRIT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Rola <b>PORNIT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Rola in <b>EROARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Rola in <b>ACUMULARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Rola in <b>ECONOMISIRE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Senzor <b>CU</b> colet in raza lui</td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Senzor <b>FARA</b> colet in raza lui</td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Senzor <b>BLOCAT</b></td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <table class="table" id="tabelL1" style="width: 45%; position:absolute; top:17%; left:50%;">
+                      <thead>
+                          <tr>
+                          <th scope="col" style="width: 30%;">Simbol</th>
+                          <th scope="col">Descriere</th>
+                          </tr>
+                      </thead>
+                      <tbody style="height: 4%;">
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Scanner <b>OFFLINE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Scanner <b>ONLINE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Cantart <b>OFFLINE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Cantart <b>ONLINE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Buton de urgenta <b>APASAT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Buton de urgenta <b>RIDICAT</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Ambaflex <b>STOP</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Ambaflex <b>START</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Ambaflex in <b>EROARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Motor Ambaflex in <b>ACUMULARE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Buton de urgenta in <b>ECONOMISIRE</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Divertor in <b>STOP</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Divertor in <b>START</b></td>
+                          </tr>
+                          <tr>
+                              <th scope="row"></th>
+                              <td>Divertor in <b>EROARE</b></td>
+                          </tr>
+                      </tbody>
+                  </table>
+                  <button class="btnInterol" id="btnInterol"></button>
+                  <button class="btnInterol1" id="btnInterol1"></button>
+                  <button class="btnInterol2" id="btnInterol2"></button>
+                  <button class="btnInterol3" id="btnInterol3"></button>
+                  <button class="btnInterol4" id="btnInterol4"></button>
+                  <button class="btnInterol5" id="btnInterol5"></button>
+                  <button class="btnInterol6" id="btnInterol6"></button>
+                  <button class="btnInterol7" id="btnInterol7"></button>
+                  <button class="btnInterol8" id="btnInterol8"></button>
+                  <button class="btnInterol9" id="btnInterol9"></button>
+                  <button class="btnInterol10" id="btnInterol10"></button>
+                  <button class="btnInterol11" id="btnInterol11"></button>
+                  <button class="btnInterol12" id="btnInterol12"></button>
+                  <button class="btnInterol13" id="btnInterol13"></button>
+                  <button class="btnInterol14" id="btnInterol14"></button>
+                  <button class="btnInterol15" id="btnInterol15"></button>
+                  <button class="btnInterol16" id="btnInterol16"></button>
+                  <button class="btnInterol17" id="btnInterol17"></button>
+                  <button class="btnInterol18" id="btnInterol18"></button>
+                  <button class="btnInterol19" id="btnInterol19"></button>
+                  <button class="btnInterol20" id="btnInterol20"></button>
+                  <button class="btnInterol21" id="btnInterol21"></button>
+                  <button class="btnInterol22" id="btnInterol22"></button>
+                  <button class="btnInterol23" id="btnInterol23"></button>
+                  <button class="btnInterol24" id="btnInterol24"></button>
+                  <button class="btnInterol25" id="btnInterol25"></button>
+                  <button class="btnInterol26" id="btnInterol26"></button>
+                  <button class="btnInterol27" id="btnInterol27"></button>
+                  <button class="btnInterol28" id="btnInterol28"></button>
+
+                  <div id="modalInterol" class="modalInterol">
+                      <div class="modalInterol-content">
+                          <span class="closeInterol" onclick="closeModal()" style="left: 101%; top:-6%; position:absolute;">&times; </span>
+                          <img id="modalImage">
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    
+    const clockElement = document.getElementById('clock');
+    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateElement = document.getElementById('date');
+    dateElement.textContent = now.toLocaleDateString(undefined, options);
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const startButton = document.getElementById("StartButton");
+      startButton.addEventListener("click", function() {      
+        Swal.fire({
+          title: "Sorter Start!",
+          timer: 1500,
+          showConfirmButton: false
+        });
+      });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const stopButton = document.getElementById("StopButton");
+    stopButton.addEventListener("click", function() {      
+      Swal.fire({
+        title: "Sorter Stop!",
+        timer: 1500,
+        showConfirmButton: false
+      });
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const resetButton = document.getElementById("ResetButton");
+
+      resetButton.addEventListener("click", function() {      
+        Swal.fire({
+          title: "Sorter Reset!",
+          timer: 1500,
+          showConfirmButton: false
+        });
+      });
+  });
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const resetButton = document.getElementById("ResetFlowButton");
+
+      resetButton.addEventListener("click", function() {      
+        Swal.fire({
+          title: "Flowsort Reset!",
+          timer: 1500,
+          showConfirmButton: false
+        });
+      });
+  });
+</script>
+
+<script>
+  
+    function reply_click(clicked_id) {
+
+      hideAllSections();
+
+      showSelectedSection(clicked_id);
+    }
+
+    function hideAllSections() {
+      document.getElementById("fluxGeneral").style.visibility = "hidden";
+      document.getElementById("sorter").style.visibility = "hidden";
+      document.getElementById("zona2").style.visibility = "hidden";
+      document.getElementById("zona3").style.visibility = "hidden";
+      document.getElementById("zona4").style.visibility = "hidden";
+    }
+
+    function showSelectedSection(clicked_id) {
+      var doc = document.getElementById("zone");
+
+      switch (clicked_id) {
+        case "f3":
+          console.log("fluxgeneral");
+          doc.style.backgroundImage = "url(img/1.png)";
+          document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+          document.getElementById("fluxGeneral").style.visibility = "visible";
+          break;
+        case "f2":
+          console.log("sorter");
+          doc.style.backgroundImage = "url(img/Zona1.png)";
+          document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+          document.getElementById("sorter").style.visibility = "visible";
+          break;
+        case "f1":
+          console.log("zona2");
+          doc.style.backgroundImage = "url(img/Zona3.png)";
+          document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+          document.getElementById("zona2").style.visibility = "visible";
+          break;
+        case "f0":
+          console.log("zona3");
+          doc.style.backgroundImage = "url(img/Zona4.png)";
+          document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+          document.getElementById("zona3").style.visibility = "visible";
+          break;
+        case "s1":
+          console.log("zona4");
+          doc.style.backgroundImage = "url(img/Zona2.png)";
+          document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+          document.getElementById("zona4").style.visibility = "visible";
+          break;
+      }
+    }
+
+    hideAllSections();
+
+  window.addEventListener('load', function() {
+    const sidebar = document.querySelector(".sidebar");
+    const closeBtn = document.querySelector("#btn");
+    const searchBtn = document.querySelector(".bx-search");
+
+    closeBtn.addEventListener("click", function(){
+        sidebar.classList.toggle("open");
+        menuBtnChange();
+    });
+
+    function menuBtnChange(){
+        if(sidebar.classList.contains("open")){
+            closeBtn.classList.replace("bx-menu","bx-menu-alt-right");
+        }else{
+            closeBtn.classList.replace("bx-menu-alt-right","bx-menu");
+        }
+    }
+  });
+
+  window.addEventListener('load', function() {
+    reply_click('f2');
+  });
+
+</script>
+
+<script>
+  (function ($) {
+      "use strict";
+      var fullHeight = function () {
+          $(".js-fullheight").css("height", $(window).height());
+          $(window).resize(function () {
+              $(".js-fullheight").css("height", $(window).height());
+          });
+      };
+      fullHeight();
+      $("#sidebarCollapse").on("click", function () {
+          $("#sidebar").toggleClass("active");
+      });
+  })(jQuery);
+</script>
+
+<script>
+    var modalInterol = document.getElementById("modalInterol");
+    var btnInterol = document.getElementById("btnInterol");
+    var btnInterol1 = document.getElementById("btnInterol1");
+    var btnInterol2 = document.getElementById("btnInterol2");
+    var btnInterol3 = document.getElementById("btnInterol3");
+    var btnInterol4 = document.getElementById("btnInterol4");
+    var btnInterol5 = document.getElementById("btnInterol5");
+    var btnInterol6 = document.getElementById("btnInterol6");
+    var btnInterol7 = document.getElementById("btnInterol7");
+    var btnInterol8 = document.getElementById("btnInterol8");
+    var btnInterol9 = document.getElementById("btnInterol9");
+    var btnInterol10 = document.getElementById("btnInterol10");
+    var btnInterol11 = document.getElementById("btnInterol11");
+    var btnInterol12 = document.getElementById("btnInterol12");
+    var btnInterol13 = document.getElementById("btnInterol13");
+    var btnInterol14 = document.getElementById("btnInterol14");
+    var btnInterol15 = document.getElementById("btnInterol15");
+    var btnInterol16 = document.getElementById("btnInterol16");
+    var btnInterol17 = document.getElementById("btnInterol17");
+    var btnInterol18 = document.getElementById("btnInterol18");
+    var btnInterol19 = document.getElementById("btnInterol19");
+    var btnInterol20 = document.getElementById("btnInterol20");
+    var btnInterol21 = document.getElementById("btnInterol21");
+    var btnInterol22 = document.getElementById("btnInterol22");
+    var btnInterol23 = document.getElementById("btnInterol23");
+    var btnInterol24 = document.getElementById("btnInterol24");
+    var btnInterol25 = document.getElementById("btnInterol25");
+    var btnInterol26 = document.getElementById("btnInterol26");
+    var btnInterol27 = document.getElementById("btnInterol27");
+    var btnInterol28 = document.getElementById("btnInterol28");
+    var modalImg = document.getElementById("modalImage");
+    var spanInterol = document.getElementsByClassName("closeInterol")[0];
+
+    btnInterol.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol1.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol2.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol3.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol4.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol5.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol6.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol7.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol8.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol9.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol10.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol11.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol12.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol13.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol14.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll4.png";
+    }
+
+    btnInterol15.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll4.png";
+    }
+
+    btnInterol16.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll5.png";
+    }
+
+    btnInterol17.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll5.png";
+    }
+
+    btnInterol18.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll6.png";
+    }
+
+    btnInterol19.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll6.png";
+    }
+
+    btnInterol20.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol21.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol22.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol23.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol24.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol28.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol25.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    btnInterol26.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    btnInterol27.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    spanInterol.onclick = function() {
+        modalInterol.style.display = "none";
+    }
+
+    function closeModal() {
+    modalInterol.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalInterol) {
+            modalInterol.style.display = "none";
+        }
+    }
+</script>
+
+
+<script>
+    var modalL1 = document.getElementById("l1Modal");
+    var btnL1 = document.getElementById("openLegend1");
+    var spanL1 = document.getElementsByClassName("closeL1")[0];
+
+    btnL1.onclick = function() {
+        modalL1.style.display = "block";
+    }
+
+    spanL1.onclick = function() {
+        modalL1.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalL1) {
+            modalL1.style.display = "none";
+        }
+    }
+</script>
+
+
+</body>
+</html>
+

@@ -1,0 +1,60 @@
+<div id="zona3">
+    <div class="electricPanelTE2"></div>
+    {{#range 1 7}}
+        <div class="ambaTablou2{{id}}" id=ambaTablou2{{id}}>
+            <h6>m{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 7}}
+        <div class="senzoriTablou2{{id}}" id=senzoriTablou2{{id}}>
+            <h6>s{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 17}}
+        <div class="roleTablou2{{id}}" id=roleTablou2{{id}}>
+            <h6>r{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 6}}
+        <div class="safetyButtonTE2{{id}}" id=safetyButtonTE2{{id}}>
+            <h6>sf{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="flowSortTE2{{id}}" id=flowSortTE2{{id}}>
+            <h6>Flw{{id}}</h6>
+        </div>
+    {{/range}}
+
+    <button type="button" class="btn btn-primary" id="openBtnTE2" data-toggle="modal" data-target="#exampleModal" style="opacity: 0;">
+    TE2
+    </button>
+
+    <div id="myModalTE2" class="modal">
+    <div class="modal-content">
+        <span class="closeTE2" style="left: 99%; top:-9px; position:relative;">&times;</span>
+        <embed src="/img/TE2_Scheme.pdf" type="application/pdf" width="100%" height="870px" />
+    </div>
+    </div>
+</div>
+
+
+<script>
+    var modalTE2 = document.getElementById("myModalTE2");
+    var btnTE2 = document.getElementById("openBtnTE2");
+    var spanTE2 = document.getElementsByClassName("closeTE2")[0];
+
+    btnTE2.onclick = function() {
+        modalTE2.style.display = "block";
+    }
+
+    spanTE2.onclick = function() {
+        modalTE2.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalTE3) {
+            modalTE2.style.display = "none";
+        }
+    }
+</script>

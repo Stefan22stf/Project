@@ -1,0 +1,403 @@
+<button type="button" class="btn btn-control" id="openLegend1" data-toggle="modal" data-target="#exempleModal" style="width: 3.5%; height:60%; position:absolute; outline: none; margin-top: 0.95%; margin-left:95.3%; padding:0px;">
+    <span><i class='bx bxs-book-bookmark' style=""></i></span>
+</button>
+
+<div id="l1Modal" class="modal">
+    <div class="modal-contentL1">
+        <span class="closeL1">&times;</span>
+        <span class="titluLegenda">Legenda</span>
+        <span class="paragrafL">Aici o să găsiți semnificația fiecărui simbol:</span>
+        <span class="cantar1"><b>Kg</b></span>
+        <span class="cantar2"><b>Kg</b></span>
+        <hr style="width: 40%; hight:0.8%; position:absolute; top:7%; left:29%; background-color:black;">
+        <span class="infoLegenda"><p><b><b style="color: #f1f1f1;">......</b>Când se apasă pe fiecare simbol individual, se va deschide o imagine reprezentând echipamentul corespunzător din realitate.</b></p></span>
+        {{#range 1 28}}
+            <div class="simbolL1{{id}}" id=simbolL1{{id}}>
+                <h6>s{{id}}</h6>
+            </div>
+        {{/range}}
+        <table class="table" id="tabelL1" style="width: 45%; position:absolute; top:17%;">
+            <thead>
+                <tr>
+                <th scope="col" style="width: 30%;">Simbol</th>
+                <th scope="col">Descriere</th>
+                </tr>
+            </thead>
+            <tbody style="height: 4%;">
+                <tr>
+                    <th scope="row"></th>
+                    <td>Banda Interol <b>OPRITA</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Banda Interol <b>PORNITA</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Banda Interol in <b>EROARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Infeed Interol <b>OPRIT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Infeed Interol <b>PORNIT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Infeed Interol in <b>EROARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Rola <b>OPRIT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Rola <b>PORNIT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Rola in <b>EROARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Rola in <b>ACUMULARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Rola in <b>ECONOMISIRE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Senzor <b>CU</b> colet in raza lui</td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Senzor <b>FARA</b> colet in raza lui</td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Senzor <b>BLOCAT</b></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table" id="tabelL1" style="width: 45%; position:absolute; top:17%; left:50%;">
+            <thead>
+                <tr>
+                <th scope="col" style="width: 30%;">Simbol</th>
+                <th scope="col">Descriere</th>
+                </tr>
+            </thead>
+            <tbody style="height: 4%;">
+                <tr>
+                    <th scope="row"></th>
+                    <td>Scanner <b>OFFLINE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Scanner <b>ONLINE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Cantart <b>OFFLINE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Cantart <b>ONLINE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Buton de urgenta <b>APASAT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Buton de urgenta <b>RIDICAT</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Ambaflex <b>STOP</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Ambaflex <b>START</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Ambaflex in <b>EROARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Motor Ambaflex in <b>ACUMULARE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Buton de urgenta in <b>ECONOMISIRE</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Divertor in <b>STOP</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Divertor in <b>START</b></td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td>Divertor in <b>EROARE</b></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btnInterol" id="btnInterol"></button>
+        <button class="btnInterol1" id="btnInterol1"></button>
+        <button class="btnInterol2" id="btnInterol2"></button>
+        <button class="btnInterol3" id="btnInterol3"></button>
+        <button class="btnInterol4" id="btnInterol4"></button>
+        <button class="btnInterol5" id="btnInterol5"></button>
+        <button class="btnInterol6" id="btnInterol6"></button>
+        <button class="btnInterol7" id="btnInterol7"></button>
+        <button class="btnInterol8" id="btnInterol8"></button>
+        <button class="btnInterol9" id="btnInterol9"></button>
+        <button class="btnInterol10" id="btnInterol10"></button>
+        <button class="btnInterol11" id="btnInterol11"></button>
+        <button class="btnInterol12" id="btnInterol12"></button>
+        <button class="btnInterol13" id="btnInterol13"></button>
+        <button class="btnInterol14" id="btnInterol14"></button>
+        <button class="btnInterol15" id="btnInterol15"></button>
+        <button class="btnInterol16" id="btnInterol16"></button>
+        <button class="btnInterol17" id="btnInterol17"></button>
+        <button class="btnInterol18" id="btnInterol18"></button>
+        <button class="btnInterol19" id="btnInterol19"></button>
+        <button class="btnInterol20" id="btnInterol20"></button>
+        <button class="btnInterol21" id="btnInterol21"></button>
+        <button class="btnInterol22" id="btnInterol22"></button>
+        <button class="btnInterol23" id="btnInterol23"></button>
+        <button class="btnInterol24" id="btnInterol24"></button>
+        <button class="btnInterol25" id="btnInterol25"></button>
+        <button class="btnInterol26" id="btnInterol26"></button>
+        <button class="btnInterol27" id="btnInterol27"></button>
+        <button class="btnInterol28" id="btnInterol28"></button>
+
+        <div id="modalInterol" class="modalInterol">
+            <div class="modalInterol-content">
+                <span class="closeInterol" onclick="closeModal()" style="left: 101%; top:-6%; position:absolute;">&times; </span>
+                <img id="modalImage">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modalInterol = document.getElementById("modalInterol");
+    var btnInterol = document.getElementById("btnInterol");
+    var btnInterol1 = document.getElementById("btnInterol1");
+    var btnInterol2 = document.getElementById("btnInterol2");
+    var btnInterol3 = document.getElementById("btnInterol3");
+    var btnInterol4 = document.getElementById("btnInterol4");
+    var btnInterol5 = document.getElementById("btnInterol5");
+    var btnInterol6 = document.getElementById("btnInterol6");
+    var btnInterol7 = document.getElementById("btnInterol7");
+    var btnInterol8 = document.getElementById("btnInterol8");
+    var btnInterol9 = document.getElementById("btnInterol9");
+    var btnInterol10 = document.getElementById("btnInterol10");
+    var btnInterol11 = document.getElementById("btnInterol11");
+    var btnInterol12 = document.getElementById("btnInterol12");
+    var btnInterol13 = document.getElementById("btnInterol13");
+    var btnInterol14 = document.getElementById("btnInterol14");
+    var btnInterol15 = document.getElementById("btnInterol15");
+    var btnInterol16 = document.getElementById("btnInterol16");
+    var btnInterol17 = document.getElementById("btnInterol17");
+    var btnInterol18 = document.getElementById("btnInterol18");
+    var btnInterol19 = document.getElementById("btnInterol19");
+    var btnInterol20 = document.getElementById("btnInterol20");
+    var btnInterol21 = document.getElementById("btnInterol21");
+    var btnInterol22 = document.getElementById("btnInterol22");
+    var btnInterol23 = document.getElementById("btnInterol23");
+    var btnInterol24 = document.getElementById("btnInterol24");
+    var btnInterol25 = document.getElementById("btnInterol25");
+    var btnInterol26 = document.getElementById("btnInterol26");
+    var btnInterol27 = document.getElementById("btnInterol27");
+    var btnInterol28 = document.getElementById("btnInterol28");
+    var modalImg = document.getElementById("modalImage");
+    var spanInterol = document.getElementsByClassName("closeInterol")[0];
+
+    btnInterol.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol1.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol2.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll.png";
+    }
+
+    btnInterol3.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol4.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol5.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll1.png";
+    }
+
+    btnInterol6.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol7.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol8.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol9.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol10.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll2.png";
+    }
+
+    btnInterol11.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol12.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol13.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll3.png";
+    }
+
+    btnInterol14.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll4.png";
+    }
+
+    btnInterol15.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll4.png";
+    }
+
+    btnInterol16.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll5.png";
+    }
+
+    btnInterol17.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll5.png";
+    }
+
+    btnInterol18.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll6.png";
+    }
+
+    btnInterol19.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll6.png";
+    }
+
+    btnInterol20.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol21.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol22.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol23.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol24.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol28.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/interoll7.png";
+    }
+
+    btnInterol25.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    btnInterol26.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    btnInterol27.onclick = function() {
+        modalInterol.style.display = "block";
+        modalImg.src = "/img/flowsort1.png";
+    }
+
+    spanInterol.onclick = function() {
+        modalInterol.style.display = "none";
+    }
+
+    function closeModal() {
+    modalInterol.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalInterol) {
+            modalInterol.style.display = "none";
+        }
+    }
+</script>
+
+
+<script>
+    var modalL1 = document.getElementById("l1Modal");
+    var btnL1 = document.getElementById("openLegend1");
+    var spanL1 = document.getElementsByClassName("closeL1")[0];
+
+    btnL1.onclick = function() {
+        modalL1.style.display = "block";
+    }
+
+    spanL1.onclick = function() {
+        modalL1.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalL1) {
+            modalL1.style.display = "none";
+        }
+    }
+</script>

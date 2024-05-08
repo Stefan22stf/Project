@@ -1,0 +1,30 @@
+<table id="tabelDate" class="table table-bordered">
+    <thead class="table-cap">
+        <tr>
+            <th scope="col" style="border: none;">Id</th>
+            <th scope="col" style="border: none;">Id Client</th>
+            <th scope="col" style="border: none;">Barcode</th>
+            <th scope="col" style="border: none;">Length</th>
+            <th scope="col" style="border: none;">Width</th>
+            <th scope="col" style="border: none;">Height</th>
+            <th scope="col" style="border: none;">Weight</th>
+            <th scope="col" style="border: none;">Date</th>
+            <th scope="col" style="border: none;">Done WMS</th>
+        </tr>    
+    </thead>
+    <tbody class="tabs">
+        {{#each errors}}
+            <tr>
+                <th scope="row" style="border: silid 1px gray;" >{{id}}</th>
+                <th scope="row">{{id_client}}</th>
+                <th scope="row">{{barcode}}</th>
+                <th scope="row">{{length}}</th>
+                <th scope="row">{{width}}</th>
+                <th scope="row">{{height}}</th>
+                <th scope="row">{{weight}}</th>
+                <th scope="row">{{date}}</th>
+                <th scope="row">{{done_wms}}</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

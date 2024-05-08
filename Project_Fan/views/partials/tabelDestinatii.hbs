@@ -1,0 +1,24 @@
+<table id="tabelDestinatii" class="table table-bordered">
+    <thead class="table-cap">
+        <tr>
+            <th scope="col" style="border: none;">Id</th>
+            <th scope="col" style="border: none;">Id Client</th>
+            <th scope="col" style="border: none;">Barcode</th>
+            <th scope="col" style="border: none;">Destination</th>
+            <th scope="col" style="border: none;">3D Barcode</th>
+            <th scope="col" style="border: none;">Date</th>
+        </tr>   
+    </thead>
+    <tbody class="tabs">
+        {{#each destination}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <th scope="row">{{id_client}}</th>
+                <th scope="row">{{barcode}}</th>
+                <th scope="row">{{destinatie}}</th>
+                <th class="larger-barcode" style="width: 20%; padding:0px;" scope="row"><div style="margin-top: 4%;">{{barcode}}</div></th>
+                <th scope="row">{{date}}</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

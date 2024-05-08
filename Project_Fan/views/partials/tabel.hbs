@@ -1,0 +1,26 @@
+<table class="table table-bordered">
+    <thead class="table-cap">
+        <tr>
+            <th scope="col" style="border: none;">Id</th>
+            <th scope="col" style="border: none;">Type</th>
+            <th scope="col" style="border: none;">Description</th>
+            <th scope="col" style="border: none;">Status</th>
+            <th scope="col" style="border: none;">Date</th>
+            <th scope="col" style="border: none;">Duration</th>
+        </tr>    
+    </thead>
+    <tbody class="tabs">
+        {{#each errors}}
+            <tr>
+                <th scope="row" style="border: silid 1px gray;" >{{id}}</th>
+                <th scope="row">{{type}}</th>
+                <th scope="row">{{description}}</th>
+                <th scope="row">{{stats status}}</th>
+                <th scope="row">{{error_date}}</th>
+                <th scope="row">{{calculateDuration error_date status duration}} min</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+
+

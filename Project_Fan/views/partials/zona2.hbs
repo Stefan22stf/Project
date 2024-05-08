@@ -1,0 +1,64 @@
+<div id="zona2">
+    <div class="electricPanelTE3"></div>
+    {{#range 1 11}}
+        <div class="ambaTablou{{id}}" id=ambaTablou{{id}}>
+            <h6>a{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 11}}
+        <div class="senzTablou{{id}}" id=senzTablou{{id}}>
+            <h6>s{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 12}}
+        <div class="motorTablou{{id}}" id=motorTablou{{id}}>
+            <h6>m{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 7}}
+        <div class="safetyButtonTE3{{id}}" id=safetyButtonTE3{{id}}>
+            <h6>sf{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="flowSortTE3{{id}}" id=flowSortTE3{{id}}>
+            <h6>Flw{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="roleFlowsort{{id}}" id=roleFlowsort{{id}}>
+            <h6>rf{{id}}</h6>
+        </div>
+    {{/range}}
+        
+    <button type="button" class="btn btn-primary" id="openBtnTE3" data-toggle="modal" data-target="#exampleModal" style="opacity: 0;">
+    TE3
+    </button>
+
+    <div id="myModalTE3" class="modal">
+    <div class="modal-content">
+        <span class="closeTE3" style="left: 99%; top:-9px; position:relative;">&times;</span>
+        <embed src="/img/TE_3_SCHEME.pdf" type="application/pdf" width="100%" height="870px" />
+    </div>
+    </div>
+</div>
+
+<script>
+    var modalTE3 = document.getElementById("myModalTE3");
+    var btnTE3 = document.getElementById("openBtnTE3");
+    var spanTE3 = document.getElementsByClassName("closeTE3")[0];
+
+    btnTE3.onclick = function() {
+        modalTE3.style.display = "block";
+    }
+
+    spanTE3.onclick = function() {
+        modalTE3.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalTE3) {
+            modalTE3.style.display = "none";
+        }
+    }
+</script>

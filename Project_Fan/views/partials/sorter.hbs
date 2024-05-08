@@ -1,0 +1,145 @@
+
+<div id="sorter">
+    <div class="electricPanel"></div>
+    {{#range 1 10}} 
+        <div class="m{{id}}" id=interolBand{{id}}>
+            <h6>M{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 6}}
+        <div class="mi{{id}}" id=infeed1{{id}}>
+            <h6>M{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 6}}
+        <div class="mi2{{id}}" id=infeed2{{id}}>
+            <h6>M{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 2}}
+        <div class="mi3{{id}}" id=infeed3{{id}}>
+            <h6>M{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 8}}
+        <div class="out1{{id}}" id=out1{{id}}>
+            <h6>O1{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out2{{id}}" id=out2{{id}}>
+            <h6>O2{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out3{{id}}" id=out3{{id}}>
+            <h6>O3{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out4{{id}}" id=out4{{id}}>
+            <h6>O4{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out5{{id}}" id=out5{{id}}>
+            <h6>O5{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out6{{id}}" id=out6{{id}}>
+            <h6>O6{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out7{{id}}" id=out7{{id}}>
+            <h6>O7{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out8{{id}}" id=out8{{id}}>
+            <h6>O8{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 1}}
+        <div class="out9{{id}}" id=out9{{id}}>
+            <h6>O9{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 8}}
+        <div class="out10{{id}}" id=out10{{id}}>
+            <h6>O10{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 7}}
+        <div class="outRetur{{id}}" id=outRetur{{id}}>
+            <h6>Or{{id}}</h6>
+        </div>
+    {{/range}}
+    {{!-- {{#range 1 5}}
+        <div class="flowSort{{id}}" id=flowSort{{id}}>
+            <h6>Flw{{id}}</h6>
+        </div>
+    {{/range}} --}}
+    {{#range 1 1}}
+        <div class="scannerCognex{{id}}" id=scannerCognex{{id}}>
+            <h6>Scan{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 4}}
+        <div class="senzorInfeed{{id}}" id=senzorInfeed{{id}}>
+            <h6>s{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 15}}
+        <div class="senzorFlowsort{{id}}" id=senzorFlowsort{{id}}>
+            <h6>s{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 7}}
+        <div class="safetyButton{{id}}" id=safetyButton{{id}}>
+            <h6>sf{{id}}</h6>
+        </div>
+    {{/range}}
+    {{#range 1 8}}
+        <div class="senzoriPlin{{id}}" id=senzoriPlin{{id}}>
+            <h6>sp{{id}}</h6>
+        </div>
+    {{/range}}
+    <div class="cantarBizerba{{id}}" id=cantarBizerba{{id}}>
+        <h6 style="margin-top: 14%;  font-weight: bold;">Kg{{id}}</h6>
+    </div>
+
+
+    <button type="button" class="btn btn-primary" id="openBtnTE1" data-toggle="modal" data-target="#exampleModal" style="opacity: 0;">
+    TE1
+    </button>
+
+    <div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" style="left: 99%; top:-9px; position:relative;">&times; </span>
+        <embed src="/img/1-TE_1_SCHEMA_11_01_2024.pdf" type="application/pdf" width="100%" height="870px" />
+    </div>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("openBtnTE1");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
