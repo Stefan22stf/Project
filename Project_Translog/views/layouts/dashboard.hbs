@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- This script got from frontendfreecode.com -->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+<script src="js/mqttws31.min.js"></script>
+<script>
+    var lastTime = new Date().getTime();
+    var lastTime2 = new Date().getTime();
+    var f3 = false;
+    var f2 = false;
+    var f1 = false;
+    var f0 = false;
+    var m1 = true;
+    var s1 = false;
+    var mm = false;
+    var showhide = false;
+    var index = ["f3","f2","f1","f0","m1","s1","main"];
+    var butIndex = 0;
+    var stsConv = "stop";
+</script>
+<script type="text/javascript" language="javascript">
+        
+        var mqtt;
+        var reconnectTimeout = 2000;
+        var host = "192.168.1.11"
+        var port = 9001;
+        var clientIdstring           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        
+
+        for ( var i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * 
+        charactersLength));
+        }
+        var mqtt = new Paho.MQTT.Client(host,port,clientIdstring);
+
+        function onConnect(){
+          console.log("connected")
+          mqtt.subscribe("/conveyor/state/#");
+          mqtt.subscribe("/conveyor/pwg/safety/");
+          mqtt.subscribe("/conveyor/scanner/status");
+          mqtt.subscribe("/conveyor/server/status");
+          mqtt.subscribe("/conveyor/dumpSts/#");
+          mqtt.subscribe("/conveyor/active/error");
+          mqtt.subscribe("/conveyor/state/safeties/mezzanine1");
+          mqtt.subscribe("/conveyor/state/safeties/mezzanine2");
+          mqtt.subscribe("/status");
+          message = new Paho.MQTT.Message("success");
+          message.destinationName="server";
+          mqtt.send(message);
+          console.log("Connected");
+        }
+
+        function mqttConnect(){
+          
+          var options={
+            timeout: 3,
+            onSuccess: onConnect,
+          }
+          mqtt.connect(options);
+          mqtt.onMessageArrived = onMessageArrived
+          mqtt.onFailure = onFailure
+          mqtt.onConnectionLost = onConnectionLost;
+          
+          
+        }
+
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:"+responseObject.errorMessage);
+            }
+        }
+
+        function onFailure(message){
+                console.log("Attempt connection!");
+                setTimeout(mqttConnect, reconnectTimeout)
+        }
+
+        
+
+        function onMessageArrived(msg){   
+          out_msg = msg.payloadString;
+          msgTopic = msg.destinationName;
+          //console.log(out_msg);
+          if(msgTopic=="/status"){
+            console.log(out_msg);
+            stsConv = out_msg;
+            if(stsConv=="start"){
+                document.getElementById("f34").style.backgroundColor = "green";
+            }else{
+                document.getElementById("f34").style.backgroundColor = "grey";
+            }
+          }
+          if(msgTopic=="/conveyor/pwg/safety/"){
+            if (out_msg == "0"){
+            var element = document.getElementById("emergency");
+            element.innerText = "Pressed";;
+            }
+            if (out_msg == "1"){
+              var element = document.getElementById("emergency");
+              element.innerText = "Released"
+            }
+          }
+
+          if(msgTopic.startsWith("/conveyor/active/error")){
+            var  zyx = document.getElementById("acterr");
+            if(out_msg=="0"){
+                zyx.innerText = "No Errors"
+            }else{
+                zyx.innerText = out_msg + " Errors";
+            }
+          }
+
+          if(msgTopic.startsWith("/conveyor/state/safeties/mezzanine1")){
+            try{
+                var xemg = false;
+                try{
+                    for (var i = 0; i < 4; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "tb" + String(i+1);
+                        var doc = document.getElementById(id);
+                        if(val==0){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    //console.log(stsConv);
+                    var pol = document.getElementById("f34");
+                    if(xemg){
+                        
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(error){
+
+                }
+            }
+            catch{
+                ;
+            }
+          }
+
+          if(msgTopic.startsWith("/conveyor/state/safeties/mezzanine2")){
+            try{
+                var xemg = false;
+                try{
+                    for (var i = 0; i < 4; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "tb" + String(i+5);
+                        var doc = document.getElementById(id);
+                        if(val==0){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    //console.log(stsConv);
+                    var pol = document.getElementById("f34");
+                    if(xemg){
+                        
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(error){
+
+                }
+            }
+            catch{
+                ;
+            }
+          }
+
+          if(msgTopic.startsWith("/conveyor/state/safeties/")){
+            if(msgTopic.startsWith("/conveyor/state/safeties/g")){
+                var xemg = false;
+                try{
+                    for (var i = 0; i < out_msg.length; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "emg" + String(i+1);
+                        //var doc = document.getElementById(id);
+                        if(val==1){
+                            xemg = true;
+                            //doc.style.backgroundColor = "red";
+                        }else{
+                            //doc.style.backgroundColor = "green";
+                        }
+                    }
+                    //console.log(stsConv);
+                    var pol = document.getElementById("f35");
+                    if(xemg){
+                        
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(error){
+
+                }
+            }
+            if(msgTopic.startsWith("/conveyor/state/safeties/2")){
+                var xemg = false;
+                try{
+                    for (var i = 0; i < out_msg.length; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "emg" + String(i+1);
+                        var doc = document.getElementById(id);
+                        if(val==1){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    var pol = document.getElementById("f32");
+                    if(xemg){
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(error){
+                    console.log(error);
+                }
+            }
+            if(msgTopic.startsWith("/conveyor/state/safeties/3")){
+                try{
+                    var xemg = false;
+                    for (var i = 0; i < out_msg.length; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "emg3" + String(i+1);
+                        var doc = document.getElementById(id);
+                        if(val==1){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    var pol = document.getElementById("f33");
+                    if(xemg){
+                        
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(error){
+                    ;
+                }
+            }
+            if(msgTopic.startsWith("/conveyor/state/safeties/1")){
+                try{
+                    var xemg = false;
+                    for (var i = 0; i < out_msg.length; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "emg1" + String(i+1);
+                        var doc = document.getElementById(id);
+                        if(val==1){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    var pol = document.getElementById("f31");
+                    if(xemg){
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(err){
+
+                }
+            }
+            if(msgTopic.startsWith("/conveyor/state/safeties/p")){
+                try{
+                    var xemg = false;
+                    for (var i = 0; i < out_msg.length-2; i++){
+                        var val = parseInt(out_msg.charAt(i));
+                        var id = "emg0" + String(i+1);
+                        var doc = document.getElementById(id);
+                        if(val==1){
+                            xemg = true;
+                            doc.style.backgroundColor = "red";
+                        }else{
+                            doc.style.backgroundColor = "green";
+                        }
+                    }
+                    console.log(xemg);
+                    var pol = document.getElementById("f30");
+                    if(xemg){
+                        
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "red";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }else{
+                        if(stsConv=="start")
+                        {
+                            pol.style.backgroundColor = "green";
+                        }else{
+                            pol.style.backgroundColor = "grey";
+                        }
+                    }
+                }catch(err){
+                    console.log(err);
+                }
+            }
+          }
+
+          if(msgTopic == "/conveyor/dumpSts/scanner"){
+               for (var i = 0; i < out_msg.length; i++){
+                var doc = document.getElementById("fls"+String(i+1));
+                var txt = document.getElementById("tfls"+String(i+1));
+                var val = parseInt(out_msg.charAt(i));
+                if(val==0){
+                    doc.style.backgroundColor = "green";
+                    txt.textContent = "0%";
+                }
+                if(val==1){
+                    doc.style.backgroundColor = "blue";
+                    txt.textContent = "<50%";
+                }
+                if(val==2){
+                    doc.style.backgroundColor = "yellow";
+                    txt.textContent = ">50%";
+                }
+                if(val==3){
+                    doc.style.backgroundColor = "red";
+                    txt.textContent = "100%";
+                }
+
+               } 
+          }
+
+          if(msgTopic == "/conveyor/dumpSts/scanner/2"){
+               for (var i = 0; i < out_msg.length; i++){
+                var doc = document.getElementById("fls"+String(i+5));
+                var txt = document.getElementById("tfls"+String(i+5));
+                var val = parseInt(out_msg.charAt(i));
+                if(val==0){
+                    doc.style.backgroundColor = "green";
+                    txt.textContent = "0%";
+                }
+                if(val==1){
+                    doc.style.backgroundColor = "blue";
+                    txt.textContent = "<50%";
+                }
+                if(val==2){
+                    doc.style.backgroundColor = "yellow";
+                    txt.textContent = ">50%";
+                }
+                if(val==3){
+                    doc.style.backgroundColor = "red";
+                    txt.textContent = "100%";
+                }
+
+               } 
+          }
+
+          if(msgTopic.startsWith("/conveyor/state/")){
+            if(f3==true && msgTopic.startsWith("/conveyor/state/errors/3")){
+                for (var i = 0; i < out_msg.length-1; i++) {
+                    var val = parseInt(out_msg.charAt(i));
+                    var id = "3" + String(i+1);
+                    var doc = document.getElementById(id);
+                    console.log("3" +doc);
+                    if(val == 0){
+                        doc.style.backgroundColor = "gray";
+                    }
+                    else if(val == 1){
+                        doc.style.backgroundColor = "lightgreen";
+                    }
+                    else if(val == 2){
+                        doc.style.backgroundColor = "lightyellow";
+                    }
+                    else if(val == 3){
+                        doc.style.backgroundColor = "blue";
+                    }
+                    else if(val == 4){
+                        doc.style.backgroundColor = "orange";
+                    }
+                    else if(val == 5){
+                        doc.style.backgroundColor = "lightblue";
+                    }
+                    else if(val == 6){
+                        doc.style.backgroundColor = "indianread";
+                    }
+                }
+            } 
+            if(f2==true && msgTopic.startsWith("/conveyor/state/errors/2")){
+                for (var i = 0; i < out_msg.length-1; i++) {
+                    var val = parseInt(out_msg.charAt(i));
+                    var id = "2" + String(i+1);
+                    var doc = document.getElementById(id);
+                    console.log("2" + doc);
+                    if(val == 0){
+                        doc.style.backgroundColor = "gray";
+                    }
+                    else if(val == 1){
+                        doc.style.backgroundColor = "lightgreen";
+                    }
+                    else if(val == 2){
+                        doc.style.backgroundColor = "lightyellow";
+                    }
+                    else if(val == 3){
+                        doc.style.backgroundColor = "blue";
+                    }
+                    else if(val == 4){
+                        doc.style.backgroundColor = "orange";
+                    }
+                    else if(val == 5){
+                        doc.style.backgroundColor = "lightblue";
+                    }
+                    else if(val == 6){
+                        doc.style.backgroundColor = "indianread";
+                    }
+                }
+            } 
+            if(f1==true && msgTopic.startsWith("/conveyor/state/errors/1")){
+                for (var i = 0; i < 20; i++) {
+                    var val = parseInt(out_msg.charAt(i));
+                    var id = "1" + String(i+1);
+                    var doc = document.getElementById(id);
+                    console.log("1" + doc);
+                    if(val == 0){
+                        doc.style.backgroundColor = "gray";
+                    }
+                    else if(val == 1){
+                        doc.style.backgroundColor = "lightgreen";
+                    }
+                    else if(val == 2){
+                        doc.style.backgroundColor = "lightyellow";
+                    }
+                    else if(val == 3){
+                        doc.style.backgroundColor = "blue";
+                    }
+                    else if(val == 4){
+                        doc.style.backgroundColor = "orange";
+                    }
+                    else if(val == 5){
+                        doc.style.backgroundColor = "lightblue";
+                    }
+                    else if(val == 6){
+                        doc.style.backgroundColor = "indianread";
+                    }
+                }
+            } 
+            if(f0==true && msgTopic.startsWith("/conveyor/state/errors/p")){
+                for (var i = 0; i < 27; i++) {
+                    var val = parseInt(out_msg.charAt(i));
+                    var id = "m0" + String(i+1);
+                    var doc = document.getElementById(id);
+                    console.log("p" + doc);
+                    if(val == 0){
+                        doc.style.backgroundColor = "gray";
+                    }
+                    else if(val == 1){
+                        doc.style.backgroundColor = "lightgreen";
+                    }
+                    else if(val == 2){
+                        doc.style.backgroundColor = "lightyellow";
+                    }
+                    else if(val == 3){
+                        doc.style.backgroundColor = "blue";
+                    }
+                    else if(val == 4){
+                        doc.style.backgroundColor = "orange";
+                    }
+                    else if(val == 5){
+                        doc.style.backgroundColor = "lightblue";
+                    }
+                    else if(val == 6){
+                        doc.style.backgroundColor = "indianread";
+                    }
+                }
+            } 
+          }
+          
+        if(msgTopic=="/conveyor/server/status")
+        {
+        lastTime =  new Date().getTime();
+        }
+
+        if(msgTopic.startsWith("/conveyor/scanner/status")){
+          lastTime2 =  new Date().getTime();
+        }
+
+        
+          
+        }
+
+        function single()
+        {   
+            alert("Single Command!");
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "http://192.168.1.11:6500/single", false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+
+        function multi()
+        {
+            alert("Multi Command!");
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "http://192.168.1.11:6500/multi", false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+
+        function startConveyor() {
+          message = new Paho.MQTT.Message("start");
+          message.destinationName="/conveyor/status";
+          mqtt.send(message);
+        }
+
+        function resetConveyor() {
+          message = new Paho.MQTT.Message("reset");
+          message.destinationName="/conveyor/status";
+          mqtt.send(message);
+        }
+
+        function stopConveyor() {
+          message = new Paho.MQTT.Message("stop");
+          message.destinationName="/conveyor/status";
+          mqtt.send(message);
+        }   
+
+
+        var keepaliveFunc = window.setInterval( function(){
+          message = new Paho.MQTT.Message("keepaliveUI");
+          message.destinationName = "/keepalive/UI";
+          mqtt.send(message);
+        },5000);
+
+        var checkServer = window.setInterval( function(){  
+            var element = document.getElementById("server");
+            var elapsedTime = (new Date().getTime() - lastTime)/1000;
+            if ( elapsedTime < 20 ) {
+                element.innerText = "Online";
+            } else {
+                element.innerText = "Offline";
+            }
+        },500);
+
+        var checkScanner = window.setInterval( function(){  
+            var element = document.getElementById("scc");
+            var elapsedTime = (new Date().getTime() - lastTime2)/1000;
+            if ( elapsedTime < 10 ) {
+                element.innerText = "Online";
+            } else {
+                element.innerText = "Offline";
+            }
+        },500);
+
+        function showMezanine(){
+            var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/mezanine.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "visible";
+                document.getElementById("single").style.visibility = "hidden";
+                f3 = false;
+                f2 = false;
+                f1 = false;
+                f0 = false;
+                m1 = true;
+                s1 = false;
+        }
+        
+      </script>
+</head>
+<body>
+    
+    <script>mqttConnect()</script>
+    <script type="text/javascript">
+        function sh(){
+                showhide =! showhide;
+                if(showhide){
+                    if(f0){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/partera.jpeg)";
+                    }
+                    if(f1){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/etaj1a.jpeg)";
+                    }   
+                    if(f2){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/etaj2a.jpeg)";
+                    }
+                    if(f3){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/etaj3a.jpeg)";
+                    }
+                    if(m1){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/mezzanineG.jpeg)";
+                    }
+                    if(s1){
+                        
+                    }
+                }else{
+                    if(f0){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/floor0.jpeg)";
+                    }
+                    if(f1){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/floor1.jpeg)";
+                    }
+                    if(f2){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/floor2.jpeg)";
+                    }
+                    if(f3){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/floor3.jpeg)";
+                    }
+                    if(m1){
+                        var doc = document.getElementById("zone");
+                        doc.style.backgroundImage = "url(/img/mezanine.jpeg)";
+                    }
+                    if(s1){
+                        
+                    }
+                }
+        }
+            function reply_click(clicked_id)
+        {
+            if(clicked_id=="main"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "";
+                document.getElementById("dropdownMenuButton").innerText = "Main";
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "visible";
+                f3 = false;
+                f2 = false;
+                f1 = false;
+                f0 = false;
+                m1 = false;
+                s1 = false;
+                mm = true;
+            }
+            if(clicked_id=="f3"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/floor3.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "visible";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                f3 = true;
+                f2 = false;
+                f1 = false;
+                f0 = false;
+                m1 = false;
+                s1 = false;
+                mm = false;
+            }
+            if(clicked_id=="f2"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/floor2.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "visible";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                f3 = false;
+                f2 = true;
+                f1 = false;
+                f0 = false;
+                m1 = false;
+                s1 = false;
+                mm = false;
+            }
+            if(clicked_id=="f1"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/floor1.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "visible";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                f3 = false;
+                f2 = false;
+                f1 = true;
+                f0 = false;
+                m1 = false;
+                s1 = false;
+                mm = false;
+            }
+            if(clicked_id=="f0"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/floor0.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "visible";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                f3 = false;
+                f2 = false;
+                f1 = false;
+                f0 = true;
+                m1 = false;
+                s1 = false;
+                mm = false;
+            }
+            if(clicked_id=="m1"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/mezanine.jpeg)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "visible";
+                document.getElementById("single").style.visibility = "hidden";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                f3 = false;
+                f2 = false;
+                f1 = false;
+                f0 = false;
+                m1 = true;
+                s1 = false;
+                mm = false;
+            }
+            if(clicked_id=="s1"){
+                var doc = document.getElementById("zone");
+                doc.style.backgroundImage = "url(/img/single.png)";
+                document.getElementById("dropdownMenuButton").innerText = document.getElementById(clicked_id).innerText;
+                document.getElementById("floor3").style.visibility = "hidden";
+                document.getElementById("floor2").style.visibility = "hidden";
+                document.getElementById("floor1").style.visibility = "hidden";
+                document.getElementById("floor0").style.visibility = "hidden";
+                document.getElementById("mezanine").style.visibility = "hidden";
+                document.getElementById("single").style.visibility = "visible";
+                document.getElementById("mainCC").style.visibility = "hidden";
+                mm = false;
+                f3 = false;
+                f2 = false;
+                f1 = false;
+                f0 = false;
+                m1 = false;
+                s1 = true;
+            }
+        }
+
+        function fwd(){
+            if(butIndex<6){
+                butIndex++;
+            }else{
+                butIndex = 0;
+            }
+            reply_click(index[butIndex]);
+            console.log(butIndex);
+        }
+
+        function back(){
+            if(butIndex>0){
+                butIndex--;
+            }else{
+                butIndex = 6;
+            }
+            reply_click(index[butIndex]);
+            console.log(butIndex);
+        }
+
+        function home(){
+            butIndex=6;
+            reply_click(index[butIndex]);
+            console.log(butIndex);
+        }
+    </script>
+   <script defer>
+        window.addEventListener('load', function() {
+        const dropdownButton = document.getElementById('dropdownMenuButton');
+        const event = new Event('click');
+        dropdownButton.dispatchEvent(event);
+      });
+    </script>
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="custom-menu">
+            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <i class="fa fa-bars"></i>
+                <span class="sr-only">Toggle Menu</span>
+            </button>
+        </div>
+        <div class="p-4">
+            <h1>
+                <a href="#" class="logo">Translog <span>Systems</span></a>
+            </h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#"><span class="fa fa-home mr-3"></span> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/errors"><span class="fa fa-exclamation-triangle mr-3"></span> Errors</a>
+                </li>
+                <li>
+                    <a href="/commands"><span class="fa fa-bars mr-3"></span> Last Commands</a>
+                </li>
+                <li>
+                    <a href="/done"><span class="fa fa-bars mr-3"></span> Done Telegram</a>
+                </li>
+                <li>
+                    <a href="/reads"><span class="fa fa-barcode mr-3"></span> Last Read</a>
+                </li>
+                <li>
+                    <a href="/readReport"><span class="fa fa-bars mr-3"></span> Reports</a>
+                </li>
+                <li>
+                    <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
+                </li>
+            </ul>
+        </div>
+         <div class="footer">
+                <p>
+                    Copyright &copy;
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    All rights reserved by DasstecB2B
+                </p>
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5 pt-5">
+        <div class="row" id="header">
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Scanner</h2>
+                        <h4><span id="scc">Offline</span></h4>
+                    </div>
+                    <div class="card-img" id="scan">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Server</h2>
+                        <h4><span id="server">Offline</span></h4>
+                    </div>
+                    <div class="card-img" id="serv">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Errors</h2>
+                        <h4 id="acterr"><span>No Error</span></h4>
+                    </div>
+                    <div class="card-img" id="err">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Emergency</h2>
+                        <h4><span id="emergency">Released</span></h4>
+                    </div>
+                    <div class="card-img" id="emg">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="main">
+            <div class="mainTitle">
+                <div class="dropdown" style="width: 50%;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mezanine
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" id="f3" onclick="reply_click(this.id)">Floor 3</a>
+                        <a class="dropdown-item" href="#" id="f2" onclick="reply_click(this.id)">Floor 2</a>
+                        <a class="dropdown-item" href="#" id="f1" onclick="reply_click(this.id)">Floor 1</a>
+                        <a class="dropdown-item" href="#" id="f0" onclick="reply_click(this.id)">Floor 0</a>
+                        <a class="dropdown-item" href="#" id="m1" onclick="reply_click(this.id)">Mezanine</a>
+                        <a class="dropdown-item" href="#" id="s1" onclick="reply_click(this.id)">Single</a>
+                        <a class="dropdown-item" href="#" id="mainS" onclick="reply_click(main)">Main</a>
+                    </div>
+                    <button type="button" class="btn btn-success" style="width: 30%;" onclick="sh()">Show/Hide</button>
+                </div>
+                <div class="controls">
+                    <button type="button" class="btn btn-success glow-button" style="width: 30%;" onclick="startConveyor()">Start</button>
+                    <button type="button" class="btn btn-danger" style="width: 30%;" onclick="stopConveyor()">Stop</button>
+                    <button type="button" class="btn btn-info" style="width: 30%;" onclick="resetConveyor()">Reset</button>
+                    
+                </div>
+            </div>
+            <div class="mainContent">
+                <div class="zone" >
+                    {{>surfing}}
+                    {{>legend}}
+                    <div class="zoneImg" id="zone">
+                        {{>floor3}}
+                        {{>floor2}}
+                        {{>floor1}}
+                        {{>floor0}}
+                        {{>mezanine}}
+                        {{>single}}
+                        {{>main}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+(function ($) {
+    "use strict";
+    var fullHeight = function () {
+        $(".js-fullheight").css("height", $(window).height());
+        $(window).resize(function () {
+            $(".js-fullheight").css("height", $(window).height());
+        });
+    };
+    fullHeight();
+    $("#sidebarCollapse").on("click", function () {
+        $("#sidebar").toggleClass("active");
+    });
+})(jQuery);
+</script>
+
+</body>
+</html>

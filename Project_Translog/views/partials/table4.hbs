@@ -1,0 +1,26 @@
+<table class="table" style="width: 100%;">
+    <thead>
+        <tr>
+                <th scope="col">id</th>
+                <th scope="col">seqNumber</th>
+                <th scope="col">barcode</th>
+                <th scope="col">wmsDump</th>
+                <th scope="col">targetDump</th>
+                <th scope="col">status</th>
+                <th scope="col">datetime</th>
+        </tr>    
+    </thead>
+    <tbody>
+        {{#each items}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <th scope="row">{{seqNb}}</th>
+                <th scope="row">{{barcode}}</th>
+                <th scope="row">{{wmsDump}}</th>
+                <th scope="row">{{targetDump}}</th>
+                <th scope="row">{{status}}</th>
+                <th scope="row">{{timestamp}}</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

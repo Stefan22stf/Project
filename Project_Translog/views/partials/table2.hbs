@@ -1,0 +1,26 @@
+<table class="table" style="width: 100%;">
+    <thead>
+        <tr>
+                <th scope="col">id</th>
+                <th scope="col">type</th>
+                <th scope="col">location</th>
+                <th scope="col">description</th>
+                <th scope="col">status</th>
+                <th scope="col">data</th>
+                <th scope="col">duration</th>
+        </tr>    
+    </thead>
+    <tbody>
+        {{#each items}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <th scope="row">{{type}}</th>
+                <th scope="row">{{location}}</th>
+                <th scope="row">{{description}}</th>
+                <th scope="row">Active</th>
+                <th scope="row">{{substring data 0 19}}</th>
+                <th scope="row">{{durata}}min</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

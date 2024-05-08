@@ -1,0 +1,104 @@
+<script>
+    function getTotesDest(){
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://10.245.14.20:6500/totesdest");
+        xhr.send();
+        xhr.responseType = "json";
+        xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var label = [];
+            var data = [];
+            const result = xhr.response;
+            console.log(result);
+            result.forEach(element => {
+                label.push(element["destination"]);
+                data.push(element["nr"]);
+            });
+            console.log(label);
+            console.log(data);
+            myChart.data.labels = label;
+            myChart.data.datasets[0].data = data;
+            myChart.update();   
+        } else {
+            console.log(`Error: ${xhr.status}`);
+        }
+        };
+    }
+    
+    var ctx = document.getElementById('barchart').getContext('2d');
+    var data = {
+        labels: ['01'],
+        datasets: [{
+        label: 'Totes per line',
+        data: [0],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+        }]
+    };
+    var options = {
+        scales: {
+        y: {
+            beginAtZero: true
+        }
+        }
+    };
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+
+    function getWH(){
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://10.245.14.20:6500/workingHour");
+        xhr.send();
+        xhr.responseType = "json";
+        xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            //console.log(xhr.response);
+            document.getElementById("wh").innerText =  (Math.round((parseInt(xhr.response["wh"]) / 6)*10)/10).toString() + "h";
+        } else {
+            console.log(`Error: ${xhr.status}`);
+        }
+        };
+    }
+
+    function alltotes(){
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://10.245.14.20:6500/alltotes");
+        xhr.send();
+        xhr.responseType = "json";
+        xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            //console.log(xhr.response);
+            document.getElementById("le").innerText =  (Math.round((parseInt(xhr.response["totes"]) / parseFloat(document.getElementById("wh").innerText))*10)/10).toString() + " boxes/hour" ;
+        } else {
+            console.log(`Error: ${xhr.status}`);
+        }
+        };
+    }
+
+    const interval = setInterval(function() {
+        getWH();
+        alltotes();
+        getTotesDest();
+    }, 5000);
+</script>
+
+<table class="table" style="width: 85.5%; margin-left: 2%;">
+    <tbody>
+        <tr>
+            <th>Date of next Inspection</th>
+            <th>31-12-2023</th>
+        </tr>  
+        <tr>
+            <th>Line efficient</th>
+            <th id="le">0</th>
+        </tr>  
+        <tr>
+            <th>Working Hours</th>
+            <th id="wh">0h</th>
+        </tr>  
+    </tbody>
+</table>

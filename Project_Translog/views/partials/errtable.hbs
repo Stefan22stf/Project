@@ -1,0 +1,30 @@
+<table class="table" style="width: 100%;">
+    <thead>
+        <tr>
+                <th scope="col"> </th>
+                <th scope="col">Today</th>
+                <th scope="col">Week</th>
+                <th scope="col">Month</th>
+        </tr>    
+    </thead>
+    <tbody>
+        <tr>
+            <th>Total</th>
+            <th id="tt1">{{items.[0].barcode_count}}</th>
+            <th>{{items.[2].barcode_count}}</th>
+            <th>{{items.[4].barcode_count}}</th>
+        </tr>
+        <tr>
+            <th>No Read / Multi Read</th>
+            <th id="tt2">{{items.[1].barcode_count}}</th>
+            <th>{{items.[3].barcode_count}}</th>
+            <th>{{items.[5].barcode_count}}</th>
+        </tr>
+        <tr>
+            <th>Efficient</th>
+            <th>{{efficient items.[0].barcode_count items.[1].barcode_count}}%</th>
+            <th>{{efficient items.[2].barcode_count items.[3].barcode_count}}%</th>
+            <th>{{efficient items.[4].barcode_count items.[5].barcode_count}}%</th>
+        </tr>
+    </tbody>
+</table>

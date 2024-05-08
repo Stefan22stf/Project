@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- This script got from frontendfreecode.com -->
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/css/dashboard.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+<script src="js/mqttws31.min.js"></script>
+<script>
+    var lastTime = new Date().getTime();
+    var lastTime2 = new Date().getTime();
+    var f3 = false;
+    var f2 = false;
+    var f1 = false;
+    var f0 = false;
+    var m1 = true;
+    var s1 = false;
+</script>
+<script type="text/javascript" language="javascript">
+        
+        var mqtt;
+        var reconnectTimeout = 2000;
+        var host = "192.168.1.11"
+        var port = 9001;
+        var clientIdstring           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        
+
+        for ( var i = 0; i < length; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * 
+        charactersLength));
+        }
+        var mqtt = new Paho.MQTT.Client(host,port,clientIdstring);
+
+        function onConnect(){
+          console.log("connected")
+          mqtt.subscribe("/conveyor/state/in/#");
+          mqtt.subscribe("/conveyor/pwg/safety/");
+          mqtt.subscribe("/conveyor/scanner/status");
+          mqtt.subscribe("/conveyor/server/status");
+          mqtt.subscribe("/conveyor/active/error");
+          message = new Paho.MQTT.Message("success");
+          message.destinationName="server";
+          mqtt.send(message);
+          console.log("Connected");
+        }
+
+        function mqttConnect(){
+          
+          var options={
+            timeout: 3,
+            onSuccess: onConnect,
+          }
+          mqtt.connect(options);
+          mqtt.onMessageArrived = onMessageArrived
+          mqtt.onFailure = onFailure
+          mqtt.onConnectionLost = onConnectionLost;
+          
+          
+        }
+
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:"+responseObject.errorMessage);
+            }
+        }
+
+        function onFailure(message){
+                console.log("Attempt connection!");
+                setTimeout(mqttConnect, reconnectTimeout)
+        }
+
+        function onMessageArrived(msg){   
+          out_msg = msg.payloadString;
+          msgTopic = msg.destinationName;
+          //console.log(out_msg);
+          if(msgTopic.startsWith("/conveyor/active/error")){
+            var  zyx = document.getElementById("acterr");
+            if(out_msg=="0"){
+                zyx.innerText = "No Errors"
+            }else{
+                zyx.innerText = out_msg + " Errors";
+            }
+          }
+
+          if(msgTopic=="/conveyor/pwg/safety/"){
+            if (out_msg == "0"){
+            var element = document.getElementById("emergency");
+            element.innerText = "Pressed";;
+            }
+            if (out_msg == "1"){
+              var element = document.getElementById("emergency");
+              element.innerText = "Released"
+            }
+          }
+          
+
+          if(msgTopic=="/conveyor/server/status")
+          {
+            lastTime =  new Date().getTime();
+          }
+
+          if(msgTopic.startsWith("/conveyor/scanner/status"))
+          {
+            lastTime2 =  new Date().getTime();
+          }
+          
+        }
+
+        function startConveyor() {
+          var element = document.getElementById("emergencyIndicator");
+          if(element.innerText!="Pressed")
+          {
+          message = new Paho.MQTT.Message("start");
+          message.destinationName="/conveyor/state";
+          mqtt.send(message);
+          //status.innerText = "Started"
+          var element = document.getElementById("nickname");
+          log = new Paho.MQTT.Message(element.innerHTML);
+          log.destinationName="/conveyor/log/start";
+          mqtt.send(log);
+        }else{
+            alert("Emergency is Pressed!");
+        }
+
+           
+        }
+
+        function stopConveyor() {
+          message = new Paho.MQTT.Message("stop");
+          message.destinationName="/conveyor/state";
+          mqtt.send(message);
+          var element = document.getElementById("status");
+          //element.innerText = "Stopped"
+          var element = document.getElementById("nickname");
+          log = new Paho.MQTT.Message(element.innerHTML);
+          log.destinationName="/conveyor/log/stop";
+          mqtt.send(log);
+          //alert("Conveyor Stop Send!");
+        }   
+
+        function resetConveyor() {
+          message = new Paho.MQTT.Message("reset");
+          message.destinationName="/conveyor/state";
+          mqtt.send(message);
+          //var element = document.getElementById("status");
+          //element.innerText = "Stopped"
+          var element = document.getElementById("nickname");
+          log = new Paho.MQTT.Message(element.innerHTML);
+          log.destinationName="/conveyor/log/reset";
+          mqtt.send(log);
+          //alert("Conveyor Reset Send!")
+        }   
+
+        
+
+        var keepaliveFunc = window.setInterval( function(){
+          message = new Paho.MQTT.Message("keepaliveUI");
+          message.destinationName = "/keepalive/UI";
+          mqtt.send(message);
+        },5000);
+
+        var checkServer = window.setInterval( function(){  
+            var element = document.getElementById("server");
+            var elapsedTime = (new Date().getTime() - lastTime)/1000;
+            if ( elapsedTime < 20 ) {
+                element.innerText = "Online";
+            } else {
+                element.innerText = "Offline";
+            }
+        },500);
+
+        var checkScanner = window.setInterval( function(){  
+            var element = document.getElementById("scc");
+            var elapsedTime = (new Date().getTime() - lastTime2)/1000;
+            if ( elapsedTime < 10 ) {
+                element.innerText = "Online";
+            } else {
+                element.innerText = "Offline";
+            }
+        },500);
+        
+      </script>
+</head>
+<body>
+    <script>mqttConnect()</script>
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="custom-menu">
+            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <i class="fa fa-bars"></i>
+                <span class="sr-only">Toggle Menu</span>
+            </button>
+        </div>
+        <div class="p-4">
+            <h1>
+                <a href="#" class="logo">Translog <span>Systems</span></a>
+            </h1>
+            <ul class="list-unstyled components mb-5">
+                <li>
+                    <a href="/dashboard"><span class="fa fa-home mr-3"></span> Dashboard</a>
+                </li>
+                <li class="active">
+                    <a href="#"><span class="fa fa-exclamation-triangle mr-3"></span> Errors</a>
+                </li>
+                <li>
+                    <a href="/commands"><span class="fa fa-bars mr-3"></span> Last Commands</a>
+                </li>
+                <li>
+                    <a href="/done"><span class="fa fa-bars mr-3"></span> Done Telegram</a>
+                </li>
+                <li>
+                    <a href="/reads"><span class="fa fa-barcode mr-3"></span> Last Read</a>
+                </li>
+                <li>
+                    <a href="/readReport"><span class="fa fa-bars mr-3"></span> Reports</a>
+                </li>
+                <li>
+                    <a href="/logout"><span class="fa fa-sign-out mr-3"></span> Logout</a>
+                </li>
+            </ul>
+        </div>
+         <div class="footer">
+                <p>
+                    Copyright &copy;
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                    All rights reserved by DasstecB2B
+                </p>
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5 pt-5">
+        <div class="row" id="header">
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Scanner</h2>
+                        <h4><span id="scc">Offline</span></h4>
+                    </div>
+                    <div class="card-img" id="scan">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Server</h2>
+                        <h4><span id="server">Offline</span></h4>
+                    </div>
+                    <div class="card-img" id="serv">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Errors</h2>
+                        <h4 id="acterr"><span>No Error</span></h4>
+                    </div>
+                    <div class="card-img" id="err">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="option">
+                <div class="card">
+                    <div class="card-text">
+                        <h2>Emergency</h2>
+                        <h4><span id="emergency">Released</span></h4>
+                    </div>
+                    <div class="card-img" id="emg">
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="main">
+            <div class="mainTitle" style="justify-content: flex-start;gap: 15px; margin-left: 15px;">
+                <form action="/ackErrors" method="get">
+                    <button type="submit" class="btn btn-primary">Acknowledge</button>
+                </form>
+            </div>
+            <div class="mainContent" style="width: 100%; justify-content:flex-start; align-items:flex-start;overflow:scroll;">
+                {{>table2 items=this.result }}
+            </div>
+        </div>
+    </div>
+<script>
+(function ($) {
+    "use strict";
+    var fullHeight = function () {
+        $(".js-fullheight").css("height", $(window).height());
+        $(window).resize(function () {
+            $(".js-fullheight").css("height", $(window).height());
+        });
+    };
+    fullHeight();
+    $("#sidebarCollapse").on("click", function () {
+        $("#sidebar").toggleClass("active");
+    });
+})(jQuery);
+</script>
+
+</body>
+</html>

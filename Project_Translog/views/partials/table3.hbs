@@ -1,0 +1,18 @@
+<table class="table" style="width: 100%;">
+    <thead>
+        <tr>
+                <th scope="col">id</th>
+                <th scope="col">barcode</th>
+                <th scope="col">date</th>
+        </tr>    
+    </thead>
+    <tbody>
+        {{#each items}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <th scope="row">{{command}}</th>
+                <th scope="row">{{date}}</th>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
