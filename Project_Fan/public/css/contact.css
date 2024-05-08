@@ -1,0 +1,56 @@
+body{
+    background-color: white;
+}
+
+.harta{
+    margin-left: 25%;
+    margin-top: 3.5%;
+}
+
+.contactText{
+    width: 100%;
+    height: 30%;
+    margin-left: 0%;
+}
+
+.elementAdress{
+    width: 100%;
+    height: 26%;
+    margin-left: 0%;
+    margin-top: 1%;
+    position: absolute;
+}
+
+.infoAdress{
+    height: 100%;
+}
+
+.contactImg{
+    width: 23%;
+    height: 23%;
+    justify-content: center;
+    align-items: center;
+    margin-left: 38%;
+}
+
+.harta{
+    width: 100%;
+    height: 37%;
+    margin-left: 0%;
+    margin-top: 12%;
+    position: absolute;
+}
+
+.mapouter{
+    margin-left: 27%;
+    margin-top: 0%;
+    width: 60%;
+    height: 80%;
+}
+
+.bot{
+    width: 100%;
+    height: 6%;
+    margin-left: 37%;
+    margin-top: 33%;
+}
