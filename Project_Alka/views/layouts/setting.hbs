@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+    <link rel="stylesheet" href="/css/font.google.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/handlebars.js"></script>
+    <script src="/js/paho-mqtt.js"></script>
+    <script src="/js/sweetalert2.11.js"></script>
+    <script src="/js/mqttws31.min.js"></script>
+    <link rel="stylesheet" href="/boxicons-2.1.4/css/boxicons.min.css">
+    <script src="/js/Alkamqtt.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/setting.css">
+
+    <title>Setting Lift</title>
+
+</head>
+
+<body>
+    <script>mqttConnect()</script>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="logo_details">
+            <img src="/img/TagLine2.jpg">
+            <i class="bx bx-menu" id="btn"></i>
+            </div>
+            <hr>
+            <ul class="nav-list">
+            <li>
+                <a href="/dashboard">
+                <i class='bx bx-home-alt'></i>
+                <span class="link_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a href="/setting">
+                     <i class='bx bx-transfer bx-rotate-90' ></i>
+                    <span class="link_name">Elevator</span>
+                </a>
+                <span class="tooltip">Elevator</span>
+            </li>
+            <li>
+                <a href="/reports">
+                <i class='bx bx-bar-chart-alt-2' ></i>
+                <span class="link_name">Reports</span>
+                </a>
+                <span class="tooltip">Reports</span>
+            </li>
+            <li>
+                <a href="/errors">
+                <i class='bx bx-error' ></i>
+                <span class="link_name">Errors</span>
+                </a>
+                <span class="tooltip">Errors</span>
+            </li>
+            <li>
+                <a href="/contact">
+                <i class='bx bx-phone' ></i>
+                <span class="link_name">Contact</span>
+                </a>
+                <span class="tooltip">Contact</span>
+            </li>
+            <li>
+                <a href="/documentatie">
+                <i class='bx bx-book' ></i>
+                <span class="link_name">Documentation</span>
+                </a>
+                <span class="tooltip">Documentation</span>
+            </li>
+            <li>
+                <a href="/logout">
+                <i class='bx bx-log-out'></i>
+                <span class="link_name">Logout</span>
+                </a>
+                <span class="tooltip">Logout</span>
+            </li>
+            </ul>
+            <div class="footer">
+            <p>
+                Copyright &copy;
+                <script>
+                document.write(new Date().getFullYear());
+                </script>
+                All rights reserved by DasstecB2B
+            </p>
+            </div>
+        </nav>
+        <div class="content">
+            <div class="row infoMedia">
+                <div class="pageName" style="color: white; font-size:25px;"><b>Elevator</b></div>
+                <div class="clock-container">
+                <p id="date"></p><p id="clock"></p><p id="date"></p></div>
+            </div>
+            <div class="row continutul" style="background-color: transparent;">
+                <div class="col-6">
+                    <div class="chenarLift1">
+                        <hr style="position: absolute; background-color: black; width:39%; height:1.5px; margin-left:24.5%; margin-top:100px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);">
+                        <div class="row titlu2 d-flex"><h1>Liftul 1</h1></div>
+                        <div class="row positionbtn" style="margin-top: 170px;">
+                            <button type="button" id="StartButton" onclick="startLift1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:4.5%; padding:0px;">
+                                <i class='bx bx-play icon-large'></i>
+                                <span1 style="flex: 1; font-family: 'Poppins';font-weight: bold; margin-left:-10%;">Start</span1>
+                            </button>
+                            <button type="button" id="StopButton" onclick="stopLift1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:30px; padding:0px;">
+                                <i class='bx bx-stop icon-large'></i>
+                                <span1 style="flex: 1;font-family: 'Poppins';font-weight: bold;margin-left:-10%;">Stop</span1>
+                            </button>
+                            <button type="button" id="ManualL1Button" onclick="manualLift1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:30px; padding:0px;">
+                                <i class='bx bxs-hand icon-large' style="color: white; margin-left:5%;"></i>
+                                <span1 style="flex: 1;font-family: 'Poppins';font-weight: bold;margin-left:-10%;">Manual</span1>
+                            </button>
+                            <button type="button" id="Position1L1Button" onclick="Position1L1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:75%; margin-left:-81%; padding:0px;">
+                                <i class='bx bxs-down-arrow icon-large' style="margin-left: 28%;"></i>
+                            </button>
+                            <button type="button" id="Position2L1Button" onclick="Position2L1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:21%; margin-left:-7.3%; padding:0px;">
+                                <i class='bx bxs-up-arrow icon-large' style="margin-left: 28%;"></i>
+                            </button>
+                            <button type="button" id="MentenantaL1Button" onclick="MentenantaL1()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:48%; margin-left:-7%; padding:0px;">
+                                <i class='bx bx-cog icon-large' style="margin-left: 28%;"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <img src="/img/liftsetting2.png" alt="" style="width: 100%; height:70%; margin-left:-23%; position:absolute; margin-top:30%">
+                        </div>
+                        <div class="row" style="height: 74%; width: 80%; margin-top:32%; position:absolute;">
+                            <div>
+                                <img src="/img/cadru.png" alt="" class="cadrulift1" style="margin-top: 7%;">
+                            </div>
+                            <div style="position:absolute; margin-top:58%; margin-left:66%; z-index:20;">
+                                <img src="/img/cutie.png" alt="" id="cutia1" class="cutieAlka hidden" style="margin-top: -167%; margin-left:-105.5%; width: 280%; ">
+                                <div class="linie" style="display:flex; width: 65%; height:3px; background-color: red;margin-top:-120%; z-index:10;"></div>
+                            </div>
+                            <div style="position:absolute; margin-top:67%; margin-left:66%; z-index:20; ">
+                                <img src="/img/cutie.png" alt="" id="cutia2" class="cutieAlka hidden" style="margin-top: -119%; margin-left:-105.5%; width: 280%;">
+                                <div class="linie" style="display:flex; width: 65%; height:3px; background-color: red;margin-top:-119%; z-index:10;"></div>
+                            </div>
+                        </div>
+                        <svg width="33%" height="600" style="margin-top: 33.6%; margin-left: 10.1%; position: absolute; z-index: 3;">
+                  
+                            <line x1="50" y1="0" x2="50" y2="465" stroke="transparent" stroke-width="4" />
+     
+                            <image xlink:href="/img/carucior2.png" x="2%" y="465" id="poza" class="pozaCarucior animated" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="chenarLift2">
+                        <hr style="position: absolute; background-color: black; width:39%; height:1.5px; margin-left:24.5%; margin-top:100px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);">
+                        <div class="row titlu2 d-flex"><h1>Liftul 2</h1></div>
+                            <div class="row positionbtn" style="margin-top: 170px;">
+                                <button type="button" id="StartButton" onclick="startLift2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:4.5%; padding:0px;">
+                                    <i class='bx bx-play icon-large'></i>
+                                    <span1 style="flex: 1; font-family: 'Poppins';font-weight: bold; margin-left:-10%;">Start</span1>
+                                </button>
+                                <button type="button" id="StopButton" onclick="stopLift2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:30px; padding:0px;">
+                                    <i class='bx bx-stop icon-large'></i>
+                                    <span1 style="flex: 1;font-family: 'Poppins';font-weight: bold;margin-left:-10%;">Stop</span1>
+                                </button>
+                                <button type="button" id="ManualButton" onclick="manualLift2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 25%; height: 60%; background-color: #f56423; outline: none; margin-top:0px; margin-left:30px; padding:0px;">
+                                    <i class='bx bxs-hand icon-large' style="color: white; margin-left:5%;"></i>
+                                    <span1 style="flex: 1;font-family: 'Poppins';font-weight: bold;margin-left:-10%;">Manual</span1>
+                                </button>
+                                <button type="button" id="Position1L1Button" onclick="Position1L2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:75%; margin-left:-81%; padding:0px;">
+                                    <i class='bx bxs-down-arrow icon-large' style="margin-left: 28%;"></i>
+                                </button>
+                                <button type="button" id="Position2L1Button" onclick="Position2L2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:21%; margin-left:-7.3%; padding:0px;">
+                                    <i class='bx bxs-up-arrow icon-large' style="margin-left: 28%;"></i>
+                                </button>
+                                <button type="button" id="MentenantaL2Button" onclick="MentenantaL2()" class="btn btn-primary d-flex align-items-center justify-content-between" style="width: 7%; height: 60%; background-color: #f56423; outline: none; margin-top:48%; margin-left:-7%; padding:0px;">
+                                    <i class='bx bx-cog icon-large' style="margin-left: 28%;"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <img src="/img/liftsetting2.png" alt="" style="width: 100%; height:70%; margin-left:-23%; position:absolute; margin-top:30%">
+                            </div>
+                            <div class="row" style="height: 74%; width: 80%; margin-top:32%; position:absolute;">
+                                <div>
+                                    <img src="/img/cadru.png" alt="" class="cadrulift2" style="margin-top: 7%;">
+                                </div>
+                                <div style="position:absolute; margin-top:58%; margin-left:66%; z-index:20;">
+                                    <img src="/img/cutie.png" alt="" id="cutie1" class="cutieAlka hidden" style="margin-top: -167%; margin-left:-105.5%; width: 280%; ">
+                                    <div class="linie" style="display:flex; width: 65%; height:3px; background-color: red;margin-top:-120%; z-index:10;"></div>
+                                </div>
+                                <div style="position:absolute; margin-top:67%; margin-left:66%; z-index:20; ">
+                                    <img src="/img/cutie.png" alt="" id="cutie2" class="cutieAlka hidden" style="margin-top: -119%; margin-left:-105.5%; width: 280%;">
+                                    <div class="linie" style="display:flex; width: 65%; height:3px; background-color: red;margin-top:-119%; z-index:10;"></div>
+                                </div>
+                            </div>
+                            <svg width="33%" height="600" style="margin-top: 33.6%; margin-left: 10.1%; position: absolute; z-index: 3;">
+                    
+                                <line x1="50" y1="0" x2="50" y2="465" stroke="transparent" stroke-width="4" />
+        
+                                <image xlink:href="/img/carucior2.png" x="2%" y1="465" id="pozalift" class="pozaCarucior animated" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('StartButton').addEventListener('click', function () {
+            localStorage.setItem('startButtonPressed', 'true');
+        });
+
+        document.getElementById('StopButton').addEventListener('click', function () {
+            localStorage.setItem('startButtonPressed', 'false');
+        });
+    </script>
+
+  <script>
+    window.onload = function(){
+        const sidebar = document.querySelector(".sidebar");
+        const closeBtn = document.querySelector("#btn");
+        const searchBtn = document.querySelector(".bx-search")
+
+        closeBtn.addEventListener("click",function(){
+            sidebar.classList.toggle("open")
+            menuBtnChange()
+        })
+
+        function menuBtnChange(){
+            if(sidebar.classList.contains("open")){
+                closeBtn.classList.replace("bx-menu","bx-menu-alt-right")
+            }else{
+                closeBtn.classList.replace("bx-menu-alt-right","bx-menu")
+            }
+        }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateElement = document.getElementById('date');
+      dateElement.textContent = now.toLocaleDateString(undefined, options);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+  </script>
+
+    <script>
+        (function ($) {
+            "use strict";
+            var fullHeight = function () {
+                $(".js-fullheight").css("height", $(window).height());
+                $(window).resize(function () {
+                    $(".js-fullheight").css("height", $(window).height());
+                });
+            };
+            fullHeight();
+            $("#sidebarCollapse").on("click", function () {
+                $("#sidebar").toggleClass("active");
+            });
+        })(jQuery);
+    </script>
+
+
+
+</body>
+</html>

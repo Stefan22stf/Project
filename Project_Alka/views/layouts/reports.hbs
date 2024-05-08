@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+    <link rel="stylesheet" href="/css/font.google.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/handlebars.js"></script>
+    <script src="/js/paho-mqtt.js"></script>
+    <script src="/js/sweetalert2.11.js"></script>
+    <script src="/js/mqttws31.min.js"></script>
+    <link rel="stylesheet" href="/boxicons-2.1.4/css/boxicons.min.css">
+    <script src="/js/Alkamqtt.js"></script>
+    <script src="/js/chart.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/reports.css">
+    
+
+<title>Reports</title>
+
+</head>
+
+<body onload="refreshPage()">
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="logo_details">
+            <img src="/img/TagLine2.jpg">
+            <i class="bx bx-menu" id="btn"></i>
+            </div>
+            <hr>
+            <ul class="nav-list">
+            <li>
+                <a href="/dashboard">
+                <i class='bx bx-home-alt'></i>
+                <span class="link_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+                <a href="/setting">
+                    <i class='bx bx-transfer bx-rotate-90' ></i>
+                    <span class="link_name">Elevator</span>
+                </a>
+                <span class="tooltip">Elevator</span>
+            </li>
+            <li>
+                <a href="/reports">
+                <i class='bx bx-bar-chart-alt-2' ></i>
+                <span class="link_name">Reports</span>
+                </a>
+                <span class="tooltip">Reports</span>
+            </li>
+            <li>
+                <a href="/errors">
+                <i class='bx bx-error' ></i>
+                <span class="link_name">Errors</span>
+                </a>
+                <span class="tooltip">Errors</span>
+            </li>
+            <li>
+                <a href="/contact">
+                <i class='bx bx-phone' ></i>
+                <span class="link_name">Contact</span>
+                </a>
+                <span class="tooltip">Contact</span>
+            </li>
+            <li>
+                <a href="/documentatie">
+                <i class='bx bx-book' ></i>
+                <span class="link_name">Documentation</span>
+                </a>
+                <span class="tooltip">Documentation</span>
+            </li>
+            <li>
+                <a href="/logout">
+                <i class='bx bx-log-out'></i>
+                <span class="link_name">Logout</span>
+                </a>
+                <span class="tooltip">Logout</span>
+            </li>
+            </ul>
+            <div class="footer">
+            <p>
+                Copyright &copy;
+                <script>
+                document.write(new Date().getFullYear());
+                </script>
+                All rights reserved by DasstecB2B
+            </p>
+            </div>
+        </nav>
+        <div class="content">
+            <div class="row infoMedia">
+            <div class="pageName" style="color: white; font-size:25px;"><b>Reports</b></div>
+            <div class="clock-container">
+            <p id="date"></p><p id="clock"></p><p id="date"></p></div>
+            </div>
+            <div class="row status">
+            {{>server}}
+            {{>elevator}}
+            {{>emergency}}
+            <div class="col p-0 h-100">
+                <div class="card d-flex">
+                <div class="col imagine">
+                    <img src="/img/error.png" alt="">
+                </div>
+                <div class="row titlu d-flex"><span><b>Error</b></span></div>
+                <div class="row scan titlu1 d-flex"><div class="card-img" id="scanerr"></div>
+                    <span style="font-family: 'Poppins', sans-serif;" id="errorTxt"></span>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="row continut"  style="max-height: 84vh; margin-top: 120px;">
+            <div class="row chartErr">
+                <div class="col-5" style="margin-left: 5%; margin-top:2%;"><canvas class="chart" id="myChart" data-conveyordata="{{conveyorData}}"></canvas></div>
+                <div class="col-5" style="margin-left: 6%; margin-top:2%;"><canvas class="chart" id="errChart" data-conveyorerror="{{errorData}}"></canvas></div>
+            </div>
+            <div class="row tabelChenar" id="dataTable">
+                <table class="table table-sm ">
+                    <thead class="capTabel">
+                        <tr>
+                        <th>Zi</th>
+                        <th>Minute de functionare</th>
+                        <th>Erori</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="footer-copy">
+                <p>
+                    Copyright &copy;
+                    <script>
+                    document.write(new Date().getFullYear());
+                    </script>
+                    All rights reserved by DasstecB2B
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        var myChartElement = document.getElementById('myChart');
+        var conveyorDataJSON = myChartElement.getAttribute('data-conveyordata');
+        var conveyorData = JSON.parse(conveyorDataJSON);
+
+        var daysOfWeek = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+
+        var timesByDay = {};
+        daysOfWeek.forEach(function(day) {
+            timesByDay[day] = 0;
+        });
+
+        conveyorData.forEach(function(data) {
+            var dayOfWeek = data.day;
+            timesByDay[dayOfWeek] += data.time; 
+        });
+
+        var lastDayOfWeek = 'Duminica';
+        var resetValues = false;
+
+        daysOfWeek.forEach(function(day) {
+            if (day === lastDayOfWeek) {
+            resetValues = true;
+            }
+            if (resetValues) {
+            timesByDay[day] = 0;
+            }
+        });
+
+        var sortedTimes = daysOfWeek.map(function(day) { return timesByDay[day]; });
+
+        var ctx = myChartElement.getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: daysOfWeek, 
+            datasets: [{
+                label: 'Timp',
+                data: sortedTimes, 
+                backgroundColor: 'rgba(98, 243, 40, 0.411)',
+                borderColor: 'rgba(54, 150, 17, 0.527)',
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+    </script>
+
+
+    <script>
+        var myChartElement = document.getElementById('errChart');
+        var errorDataJSON = myChartElement.getAttribute('data-conveyorerror');
+        var errorData = JSON.parse(errorDataJSON);
+
+        function translateDayName(dayName) {
+            switch (dayName) {
+            case 'Monday':
+                return 'Luni';
+            case 'Tuesday':
+                return 'Marti';
+            case 'Wednesday':
+                return 'Miercuri';
+            case 'Thursday':
+                return 'Joi';
+            case 'Friday':
+                return 'Vineri';
+            case 'Saturday':
+                return 'Sambata';
+            case 'Sunday':
+                return 'Duminica';
+            default:
+                return dayName;
+            }
+        }
+
+        var allDaysOfWeek = ['Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata', 'Duminica'];
+        var errorCountsByDay = {};
+
+        allDaysOfWeek.forEach(function (day) {
+            errorCountsByDay[day] = 0;
+        });
+
+        errorData.forEach(function (data) {
+            var translatedDay = translateDayName(data.dayOfWeek);
+            errorCountsByDay[translatedDay] += data.errorCount; 
+        });
+
+        var lastDayOfWeek = 'Duminica';
+        var resetValues = false;
+
+        allDaysOfWeek.forEach(function (day) {
+            if (day === lastDayOfWeek) {
+            resetValues = true;
+            }
+            if (resetValues) {
+            errorCountsByDay[day] = 0;
+            }
+        });
+
+        var labels = allDaysOfWeek.map(function(day) { return translateDayName(day); });
+        var errorCounts = allDaysOfWeek.map(function(day) { return errorCountsByDay[day]; });
+
+        var ctx = myChartElement.getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: labels, 
+            datasets: [{
+                label: 'Error',
+                data: errorCounts,
+                backgroundColor: 'rgba(218, 20, 20, 0.623)',
+                borderColor: 'rgb(248, 30, 30)',
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+    </script>
+
+    <script>
+        var conveyorData = sortedTimes; 
+
+        var errorData = errorCounts;
+
+        var tableBody = document.querySelector('table tbody');
+
+        allDaysOfWeek.forEach(function(day, index) {
+            var conveyorValue = conveyorData[index] || 0; 
+            var errors = errorData[index] || 0; 
+
+            var row = document.createElement('tr');
+            var dayCell = document.createElement('td');
+            dayCell.textContent = day;
+            var conveyorCell = document.createElement('td');
+            conveyorCell.textContent = conveyorValue;
+            var errorsCell = document.createElement('td');
+            errorsCell.textContent = errors;
+
+            row.appendChild(dayCell);
+            row.appendChild(conveyorCell);
+            row.appendChild(errorsCell);
+
+            tableBody.appendChild(row);
+        });
+    </script>
+
+    <script>
+        setInterval(function(){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET','/checkErrors');
+            xhr.send();
+            xhr.onload = function(){
+                if(xhr.status == 200){
+                    var jsn = JSON.parse(xhr.response);
+                    var doc = document.getElementById("scanerr");
+                    var dcx = document.getElementById("errorTxt");
+                    if( parseInt(jsn["error"]) > 0 ){
+                        doc.style.backgroundColor = "red";
+                        dcx.innerHTML =  String(jsn["error"]) + " Errors"
+                    }else{
+                        doc.style.backgroundColor = "rgb(93, 230, 66);";
+                        dcx.innerHTML = "No Errors";
+                    }
+                }
+            }
+        },);
+    </script>
+
+
+  <script>
+    window.onload = function(){
+        const sidebar = document.querySelector(".sidebar");
+        const closeBtn = document.querySelector("#btn");
+
+        closeBtn.addEventListener("click",function(){
+            sidebar.classList.toggle("open")
+            menuBtnChange()
+        })
+
+        function menuBtnChange(){
+            if(sidebar.classList.contains("open")){
+                closeBtn.classList.replace("bx-menu","bx-menu-alt-right")
+            }else{
+                closeBtn.classList.replace("bx-menu-alt-right","bx-menu")
+            }
+        }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateElement = document.getElementById('date');
+      dateElement.textContent = now.toLocaleDateString(undefined, options);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+  </script>
+
+    <script>
+        (function ($) {
+            "use strict";
+            var fullHeight = function () {
+                $(".js-fullheight").css("height", $(window).height());
+                $(window).resize(function () {
+                    $(".js-fullheight").css("height", $(window).height());
+                });
+            };
+            fullHeight();
+            $("#sidebarCollapse").on("click", function () {
+                $("#sidebar").toggleClass("active");
+            });
+        })(jQuery);
+    </script>
+
+</body>
+</html>

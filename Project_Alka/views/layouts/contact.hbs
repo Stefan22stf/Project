@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+    <link rel="stylesheet" href="/css/font.google.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/handlebars.js"></script>
+    <script src="/js/paho-mqtt.js"></script>
+    <script src="/js/sweetalert2.11.js"></script>
+    <script src="/js/mqttws31.min.js"></script>
+    <link rel="stylesheet" href="/boxicons-2.1.4/css/boxicons.min.css">
+    <script src="/js/Alkamqtt.js"></script>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/contact.css">
+
+  <title>Contact</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="logo_details">
+            <img src="/img/TagLine2.jpg">
+            <i class="bx bx-menu" id="btn"></i>
+            </div>
+            <hr>
+            <ul class="nav-list">
+            <li>
+                <a href="/dashboard">
+                <i class='bx bx-home-alt'></i>
+                <span class="link_name">Dashboard</span>
+                </a>
+                <span class="tooltip">Dashboard</span>
+            </li>
+            <li>
+            <a href="/setting">
+                <i class='bx bx-transfer bx-rotate-90' ></i>
+                <span class="link_name">Elevator</span>
+            </a>
+            <span class="tooltip">Elevator</span>
+            </li>
+            <li>
+                <a href="/reports">
+                <i class='bx bx-bar-chart-alt-2' ></i>
+                <span class="link_name">Reports</span>
+                </a>
+                <span class="tooltip">Reports</span>
+            </li>
+            <li>
+                <a href="/errors">
+                <i class='bx bx-error' ></i>
+                <span class="link_name">Errors</span>
+                </a>
+                <span class="tooltip">Errors</span>
+            </li>
+            <li>
+                <a href="/contact">
+                <i class='bx bx-phone' ></i>
+                <span class="link_name">Contact</span>
+                </a>
+                <span class="tooltip">Contact</span>
+            </li>
+            <li>
+                <a href="/documentatie">
+                <i class='bx bx-book' ></i>
+                <span class="link_name">Documentation</span>
+                </a>
+                <span class="tooltip">Documentation</span>
+            </li>
+            <li>
+                <a href="/logout">
+                <i class='bx bx-log-out'></i>
+                <span class="link_name">Logout</span>
+                </a>
+                <span class="tooltip">Logout</span>
+            </li>
+            </ul>
+            <div class="footer">
+            <p>
+                Copyright &copy;
+                <script>
+                document.write(new Date().getFullYear());
+                </script>
+                All rights reserved by DasstecB2B
+            </p>
+            </div>
+        </nav>
+        <div class="content">
+            <div class="row infoMedia">
+                <div class="pageName" style="color: white; font-size:25px;"><b>Contact</b></div>
+                <div class="clock-container">
+                <p id="date"></p><p id="clock"></p><p id="date"></p></div>
+            </div>
+            <div class="row continut">
+                <div class="row contactText" style="align-items: center; justify-content:center; margin-top:3%;">
+                    <div class="sub-title">
+                        <div class="sub-title">
+                            <div class="sub-title">
+                                <span style="font-family: poppins, sans-serif; font-size: 18px; color: #39444c; align-items: center; justify-content:center;">
+                                    <a href="https://www.linkedin.com/company/dasstec/" target="_blank" rel="noopener noreferrer">
+                                        <img class="wp-image-2435 alignnone" src="/img/Factory-Automation_logo.png" alt="Logo Dasstec" width="40%" height="15%" style="margin-left:30%; margin-top:-3%"/>
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="sub-title">
+                                <span style="font-family: poppins, sans-serif; font-size: 18px; align-items: center; justify-content:center; color: #39444c; margin-left:41.5%;">Win Win Company</span>
+                            </div>
+                            <p class="title animation">
+                                <span style="font-size: 36px;">
+                                    <strong>
+                                        <span style="font-family: poppins, sans-serif; align-items: center; justify-content:center; color: #39444c;">
+                                            <span style="color: #890000; margin-left:28.5%;">Dasstec, </span>
+                                            <span style="color: #002060;">automatizări</span>
+                                        </span>
+                                    </strong>
+                                </span>
+                            </p>
+                        </div>
+                        <p class="subtitle animation" style="align-items: center; justify-content:center;">
+                            <span style="font-size: 18px; font-family: poppins, sans-serif; color: #39444c;">Nativi în automatizări, pasionați de tehnologie, dedicați fiecărui proiect! </span>
+                            <span style="font-size: 18px; font-family: poppins, sans-serif; color: #39444c;">
+                                Focusați pe soluții de automatizări:<br/>
+                                <strong style="margin-left:14.5%;">E-commerce, Warehouse, Pharma, Food și alte industrii. Soluții intralogistice.</strong>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row elementAdress" style="align-items: center; justify-content:center;">
+                    <div class="col-3 infoAdress">
+                        <img src="/img/building.png" alt="" class="contactImg">
+                        <strong style="margin-left: 43%;">Adresă</strong>
+                        <br>
+                        <div class="row" style="width: 70%; margin-left:25%;">
+                            <span style="align-itmes: center; justify-text:center;">Strada Brațului nr. 7, Sector 2</span>
+                            <span style="margin-left: 12%;">București, România</span>
+                        </div>
+                    </div>
+                    <div class="col-3 infoAdress">
+                        <img src="/img/telephone-call.png" alt="" class="contactImg">
+                        <strong style="margin-left: 38%;">Office Dasstec</strong>
+                        <br>
+                        <div class="row" style="width: 70%; margin-left:35%;">
+                            <span style="align-itmes: center; justify-text:center;">office@dasstec.ro</span>
+                            <span style="margin-top: 4.7%; margin-left:1.2%; position:absolute;">+40 374 966 966</span>
+                        </div>
+                    </div>
+                    <div class="col-3 infoAdress">
+                        <img src="/img/gear.png" alt="" class="contactImg">
+                        <strong style="margin-left: 39%;">ManWinWin</strong>
+                        <br>
+                        <div class="row" style="width: 70%; margin-left:31.5%;">
+                            <span style="align-itmes: center; justify-text:center;">office@manwinwin.ro</span>
+                            <span style="margin-top: 4.7%; margin-left:4%; position:absolute;">+40 758 093 092</span>
+                        </div>
+                    </div>
+                    <div class="col-3 infoAdress">
+                        <img src="/img/settings-gears.png" alt="" class="contactImg">
+                        <strong style="margin-left: 38%;">Mentenanță</strong>
+                        <br>
+                        <div class="row" style="width: 70%; margin-left:42%;">
+                            <span style="align-itmes: center; justify-text:center;">24/7/365</span>
+                            <span style="margin-top: 4.7%; margin-left:-6%; position:absolute;">+40 758 012 680</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row harta">
+                    <div class="mapouter">
+                        <div class="gmap_canvas">
+                            <iframe src="https://maps.google.com/maps?q=strada%20bratului%20nr%207%20dasstec%20b2b&amp;t=&amp;z=13&amp;ie=UTF8&amp;iwloc=&amp;output=embed" frameborder="0" scrolling="no" style="width: 60%; height: 100%;"></iframe>
+                            <style>
+                                .mapouter { position: relative; height: 340px; width: 100%; }
+                                .gmap_canvas { overflow: hidden; height: 340px; width: 100%; }
+                                .gmap_canvas iframe { position: relative; z-index: 2; }
+                                .gmap_canvas a { top: 0; z-index: 0; }
+                            </style>
+                        </div>
+                    </div>
+                </div>
+                <div class="row bot">
+                    <div class="footer-copy">
+                        <p>
+                            Copyright &copy;
+                            <script>
+                            document.write(new Date().getFullYear());
+                            </script>
+                            All rights reserved by DasstecB2B
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  <script>
+    window.onload = function(){
+        const sidebar = document.querySelector(".sidebar");
+        const closeBtn = document.querySelector("#btn");
+        const searchBtn = document.querySelector(".bx-search")
+
+        closeBtn.addEventListener("click",function(){
+            sidebar.classList.toggle("open")
+            menuBtnChange()
+        })
+
+        function menuBtnChange(){
+            if(sidebar.classList.contains("open")){
+                closeBtn.classList.replace("bx-menu","bx-menu-alt-right")
+            }else{
+                closeBtn.classList.replace("bx-menu-alt-right","bx-menu")
+            }
+        }
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      
+      const clockElement = document.getElementById('clock');
+      clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const dateElement = document.getElementById('date');
+      dateElement.textContent = now.toLocaleDateString(undefined, options);
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+  </script>
+
+    <script>
+        (function ($) {
+            "use strict";
+            var fullHeight = function () {
+                $(".js-fullheight").css("height", $(window).height());
+                $(window).resize(function () {
+                    $(".js-fullheight").css("height", $(window).height());
+                });
+            };
+            fullHeight();
+            $("#sidebarCollapse").on("click", function () {
+                $("#sidebar").toggleClass("active");
+            });
+        })(jQuery);
+    </script>
+
+</body>
+</html>
